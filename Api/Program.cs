@@ -1,6 +1,8 @@
 using Api.Modules;
 using Application;
 using Infrastructure.Persistence;
+using FastEndpoints;
+using FastEndpoints.Swagger;
 
 namespace Api
 {
@@ -10,25 +12,25 @@ namespace Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.SetupServices();
+            builder.Services.SetupServices(builder.Configuration);
             builder.Services.AddApplicationServices();
-            builder.Services.AddPersistenceServices();
+            builder.Services.AddPersistenceServices(builder.Configuration);
 
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddFastEndpoints();
+            builder.Services.SwaggerDocument(); // Register FastEndpoints Swagger
 
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
+                app.UseSwaggerGen(); // Use FastEndpoints Swagger middleware
                 app.UseSwaggerUI();
             }
 
             await app.InitialiseDatabaseAsync();
 
             app.UseCors();
-            app.MapControllers();
+            app.UseFastEndpoints();
 
             app.Run();
         }

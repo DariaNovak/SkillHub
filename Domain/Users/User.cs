@@ -15,10 +15,11 @@ namespace Domain.Users
         public string Name { get; set; } 
         public string Email { get; set; } 
         public string PasswordHash { get; private set; } 
-        public Role Role { get ; private set; } 
+       
+         public Role Role { get ; private set; } 
         public DateTime JoinDate { get; private set; } 
 
-
+        private User() { }
         public User(
             Guid id,
             string name,
