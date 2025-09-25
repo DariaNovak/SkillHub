@@ -19,7 +19,7 @@ public class CreateUserDtoValidator : AbstractValidator<CreateUserDto>
             .NotEmpty()
             .MinimumLength(6);
 
-        RuleFor(x => x.Role)
+        RuleFor(x => x.RoleId)
             .NotNull();
 
         RuleFor(x => x.JoinDate)

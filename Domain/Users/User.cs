@@ -15,8 +15,8 @@ namespace Domain.Users
         public string Name { get; set; } 
         public string Email { get; set; } 
         public string PasswordHash { get; private set; } 
-       
-         public Role Role { get ; private set; } 
+        public Guid RoleId { get; private set; }
+        // public Role Role { get ; private set; } 
         public DateTime JoinDate { get; private set; } 
 
         private User() { }
@@ -25,14 +25,14 @@ namespace Domain.Users
             string name,
             string email,
             string passwordHash,
-            Role role,
+            Guid roleId,
             DateTime joinDate)
         {
             Id = id;
             Name = name;
             Email = email;
             PasswordHash = passwordHash;
-            Role = role;
+            RoleId = roleId;
             JoinDate = joinDate;
         }
         public static User New(
@@ -40,7 +40,7 @@ namespace Domain.Users
             string name,
             string email,
             string passwordHash,
-            Role role,
+            Guid roleId,
             DateTime joinDate)
         {
             return new User(
@@ -48,7 +48,7 @@ namespace Domain.Users
                 name,
                 email,
                 passwordHash,
-                role,
+                roleId,
                 DateTime.Now);
         }
 

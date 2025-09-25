@@ -11,7 +11,7 @@ public record UpdateUserCommand(
     string Name,
     string Email,
     string PasswordHash,
-    Role Role,
+    Guid RoleId,
     DateTime JoinDate
 ) : IRequest;
 
@@ -25,7 +25,7 @@ public class UpdateUserCommandHandler(
             request.Name,
             request.Email,
             request.PasswordHash,
-            request.Role,
+            request.RoleId,
             request.JoinDate
         );
 

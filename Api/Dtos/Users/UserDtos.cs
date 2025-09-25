@@ -9,7 +9,7 @@ public record UserDto(
     string Name,
     string Email,
     string PasswordHash,
-    Role Role,
+    Guid RoleId,
     DateTime JoinDate)
 {
     public static UserDto FromDomainModel(User user)
@@ -18,7 +18,7 @@ public record UserDto(
             user.Name,
             user.Email,
             user.PasswordHash,
-            user.Role,
+            user.RoleId,
             user.JoinDate);
 }
 
@@ -26,7 +26,7 @@ public record CreateUserDto(
     string Name,
     string Email,
     string PasswordHash,
-    Role Role,
+    Guid RoleId,
     DateTime JoinDate);
 
 public record UpdateUserDto(
@@ -34,7 +34,7 @@ public record UpdateUserDto(
     string Name,
     string Email,
     string PasswordHash,
-    Role Role,
+    Guid RoleId,
     DateTime JoinDate);
 
 public record DeleteUserDto(Guid Id);

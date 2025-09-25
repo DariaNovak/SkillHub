@@ -11,7 +11,7 @@ public record CreateUserCommand : IRequest<User>
     public required string Name { get; init; }
     public required string Email { get; init; }
     public required string PasswordHash { get; init; }
-    public required Role Role { get; init; }
+    public required Guid RoleId { get; init; }
     public required DateTime JoinDate { get; init; }
 }
 
@@ -22,7 +22,7 @@ public class CreateUserCommandHandler(
     {
         var user = await userRepository.AddAsync(
             User.New(Guid.NewGuid(), request.Name, request.Email,
-            request.PasswordHash, request.Role, request.JoinDate),
+            request.PasswordHash, request.RoleId, request.JoinDate),
             cancellationToken);
 
         return user;
