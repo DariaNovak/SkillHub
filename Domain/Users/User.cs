@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Domain.Roles.Role;
-
-namespace Domain.Users
+﻿namespace Domain.Users
 {
     public class User
     {
-  
-
         public Guid Id { get; private set; } 
         public string Name { get; set; } 
         public string Email { get; set; } 
@@ -19,8 +10,8 @@ namespace Domain.Users
         // public Role Role { get ; private set; } 
         public DateTime JoinDate { get; private set; } 
 
-        private User() { }
-        public User(
+      
+        private User(
             Guid id,
             string name,
             string email,
@@ -36,7 +27,6 @@ namespace Domain.Users
             JoinDate = joinDate;
         }
         public static User New(
-            Guid id,
             string name,
             string email,
             string passwordHash,

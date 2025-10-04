@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Roles.Role
+﻿namespace Domain.Roles.Role
 {
     public class Role
     {

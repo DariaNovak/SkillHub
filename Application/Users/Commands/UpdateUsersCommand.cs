@@ -20,8 +20,7 @@ public class UpdateUserCommandHandler(
 {
     public async Task Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
-        var user = new User(
-            request.UserId,
+        var user = User.New(
             request.Name,
             request.Email,
             request.PasswordHash,
