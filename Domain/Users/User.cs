@@ -1,4 +1,6 @@
-﻿namespace Domain.Users
+﻿using Domain.UsersSkills;
+
+namespace Domain.Users
 {
     public class User
     {
@@ -10,7 +12,9 @@
         // public Role Role { get ; private set; } 
         public DateTime JoinDate { get; private set; } 
 
-      
+        public ICollection<UserSkill> UserSkills { get; private set; }
+
+
         private User(
             Guid id,
             string name,

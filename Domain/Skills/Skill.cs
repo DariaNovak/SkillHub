@@ -1,4 +1,5 @@
-﻿using Domain.UsersSkills;
+﻿using Domain.CoursesSkills;
+using Domain.UsersSkills;
 
 namespace Domain.Skills
 {
@@ -8,6 +9,7 @@ namespace Domain.Skills
         public string Name { get; private set; }
 
         public ICollection<UserSkill> UserSkills { get; private set; }
+        public ICollection<CourseSkill> CourseSkills { get; private set; }
 
         private Skill(Guid id, string name)
         {

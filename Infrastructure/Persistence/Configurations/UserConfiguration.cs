@@ -24,6 +24,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasDefaultValueSql("timezone('utc', now())")
             .IsRequired();
 
+        // One-to-Many: User -> Skills
+        builder.HasMany(x => x.UserSkills)
+            .WithOne(x => x.User)
+            .HasForeignKey(x => x.UserId);
 
     }
 }

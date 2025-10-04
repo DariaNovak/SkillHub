@@ -21,7 +21,7 @@ public class CreateUserCommandHandler(
     public async Task<User> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         var user = await userRepository.AddAsync(
-            User.New(Guid.NewGuid(), request.Name, request.Email,
+            User.New(request.Name, request.Email,
             request.PasswordHash, request.RoleId, request.JoinDate),
             cancellationToken);
 
