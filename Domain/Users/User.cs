@@ -10,7 +10,7 @@ namespace Domain.Users
         public string Email { get; set; } 
         public string PasswordHash { get; private set; } 
         public Guid RoleId { get; private set; }
-         public Role Role { get ; private set; } 
+        public Role Role { get ; private set; } 
         public DateTime JoinDate { get; private set; } 
 
         public ICollection<UserSkill> UserSkills { get; private set; }
@@ -47,10 +47,17 @@ namespace Domain.Users
                 DateTime.Now);
         }
 
-        public void UpdateInfo(string name, string email)
+        public void UpdateInfo(string name,
+            string email,
+            string passwordHash,
+            Guid roleId,
+            DateTime joinDate)
         {
             Name = name;
             Email = email;
+            PasswordHash = passwordHash;
+            RoleId = roleId;
+            JoinDate = joinDate;
         }
     }
 }

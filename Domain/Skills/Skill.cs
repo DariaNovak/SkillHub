@@ -22,5 +22,10 @@ namespace Domain.Skills
         {
             return new Skill(Guid.NewGuid(), name);
         }
+
+        public void UpdateInfo(string name)
+        {
+            Name = name;
+        }
     }
 }

@@ -10,25 +10,26 @@ using MediatR;
 
 namespace Application.Roles.Commands;
 
-public record UpdateRoleCommand : IRequest<Role>
-{
-    public required Guid Id { get; init; }
-    public required string Name { get; init; }
-}
+public record UpdateRoleCommand(
+    Guid Id,
+    string Name
+ ) : IRequest;
+
 
 public class UpdateRoleCommandHandler(
     IRoleQueries roleQueries,
-    IRoleRepository roleRepository) : IRequestHandler<UpdateRoleCommand, Role>
+    IRoleRepository roleRepository) : IRequestHandler<UpdateRoleCommand>
 {
-    public async Task<Role> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
+    public async Task Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
     {
         var role = await roleQueries.GetByIdAsync(request.Id, cancellationToken);
+
         if (role is null)
             throw new KeyNotFoundException("Role not found.");
 
-        role.UpdateRole(request.Name);
+        role.UpdateInfo(request.Name);
+
         await roleRepository.UpdateAsync(role, cancellationToken);
 
-        return role;
     }
 }

@@ -1,11 +1,11 @@
 ﻿using FastEndpoints;
 using MediatR;
 using Application.Users.Commands;
-using Domain.Users;
+using Api.Dtos;
 
 namespace Api.Controllers.Users;
 
-public class CreateUserEndpoint : Endpoint<CreateUserCommand, User>
+public class CreateUserEndpoint : Endpoint<CreateUserCommand, UserDto>
 {
     private readonly IMediator _mediator;
 
@@ -23,6 +23,6 @@ public class CreateUserEndpoint : Endpoint<CreateUserCommand, User>
     public override async Task HandleAsync(CreateUserCommand req, CancellationToken ct)
     {
         var user = await _mediator.Send(req, ct);
-        Response = user;
+        Response = UserDto.FromDomainModel(user);
     }
 }
