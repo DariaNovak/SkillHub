@@ -21,12 +21,11 @@ namespace Domain.Lessons
             Order = order;
         }
 
-        public static Lesson New(string title, string content, Course course, int order)
+        public static Lesson New(string title, string content, Guid courseId, int order)
         {
-            if (course == null)
-                throw new ArgumentNullException(nameof(course));
+           
 
-            return new Lesson(Guid.NewGuid(), title, content, course.Id, order);
+            return new Lesson(Guid.NewGuid(), title, content, courseId, order);
         }
         public void UpdateInfo(string title, string content, int order)
         {

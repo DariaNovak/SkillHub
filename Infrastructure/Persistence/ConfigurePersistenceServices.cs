@@ -30,8 +30,29 @@ public static class ConfigurePersistenceServices
 
     private static void AddRepositories(this IServiceCollection services)
     {
+        // User
         services.AddScoped<UserRepository>();
         services.AddScoped<IUserRepository>(provider => provider.GetRequiredService<UserRepository>());
         services.AddScoped<IUserQueries>(provider => provider.GetRequiredService<UserRepository>());
+
+        // Lesson
+        services.AddScoped<LessonRepository>();
+        services.AddScoped<ILessonRepository>(provider => provider.GetRequiredService<LessonRepository>());
+        services.AddScoped<ILessonQueries>(provider => provider.GetRequiredService<LessonRepository>());
+
+        // Course
+        services.AddScoped<CourseRepository>();
+        services.AddScoped<ICourseRepository>(provider => provider.GetRequiredService<CourseRepository>());
+        services.AddScoped<ICourseQueries>(provider => provider.GetRequiredService<CourseRepository>());
+
+        // Role
+        services.AddScoped<RoleRepository>();
+        services.AddScoped<IRoleRepository>(provider => provider.GetRequiredService<RoleRepository>());
+        services.AddScoped<IRoleQueries>(provider => provider.GetRequiredService<RoleRepository>());
+
+        // Skill
+        services.AddScoped<SkillRepository>();
+        services.AddScoped<ISkillRepository>(provider => provider.GetRequiredService<SkillRepository>());
+        services.AddScoped<ISkillQueries>(provider => provider.GetRequiredService<SkillRepository>());
     }
 }

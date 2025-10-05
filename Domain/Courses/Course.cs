@@ -27,13 +27,13 @@ namespace Domain.Courses
             CourseSkills = new List<CourseSkill>();
         }
 
-        public static Course New(string title, string description, User author)
+        public static Course New(string title, string description, Guid authorId)
         {
             return new Course(
                 Guid.NewGuid(),
                 title,
                 description,
-                author.Id,
+                authorId,
                 DateTime.Now
             );
         }

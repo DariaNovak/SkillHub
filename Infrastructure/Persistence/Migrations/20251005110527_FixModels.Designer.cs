@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251005110527_FixModels")]
+    partial class FixModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,18 +181,11 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("role_id");
 
-                    b.Property<Guid>("RoleId1")
-                        .HasColumnType("uuid")
-                        .HasColumnName("role_id1");
-
                     b.HasKey("Id")
                         .HasName("pk_users");
 
                     b.HasIndex("RoleId")
                         .HasDatabaseName("ix_users_role_id");
-
-                    b.HasIndex("RoleId1")
-                        .HasDatabaseName("ix_users_role_id1");
 
                     b.ToTable("users", (string)null);
                 });
@@ -274,15 +270,6 @@ namespace Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_users_roles_role_id");
-
-                    b.HasOne("Domain.Roles.Role.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_users_roles_role_id1");
-
-                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Domain.UsersSkills.UserSkill", b =>
