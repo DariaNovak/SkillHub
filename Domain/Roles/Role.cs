@@ -1,11 +1,15 @@
-﻿namespace Domain.Roles.Role
+﻿using Domain.Users;
+
+namespace Domain.Roles.Role
 {
     public class Role
     {
         public Guid Id { get; private set; } 
         public string Name { get; private set; }
 
-        public Role(Guid id, string name)
+        public ICollection<User> Users { get; set; }
+
+        private Role(Guid id, string name)
         {
             Id = id;
             Name = name;

@@ -1,11 +1,11 @@
+using Api.Dtos;
 using Application.Roles.Queries;
-using Domain.Roles.Role;
 using FastEndpoints;
 using MediatR;
 
 namespace Api.Controllers.Roles;
 
-public class GetAllRoleEndpoint : EndpointWithoutRequest<List<Role>>
+public class GetAllRoleEndpoint : EndpointWithoutRequest<List<RoleDto>>
 {
     private readonly IMediator _mediator;
 
@@ -23,6 +23,6 @@ public class GetAllRoleEndpoint : EndpointWithoutRequest<List<Role>>
     public override async Task HandleAsync(CancellationToken ct)
     {
         var roles = await _mediator.Send(new GetAllRoleQuery(), ct);
-        Response = roles.ToList();
+        Response = roles.Select(RoleDto.FromDomainModel).ToList(); ;
     }
 }

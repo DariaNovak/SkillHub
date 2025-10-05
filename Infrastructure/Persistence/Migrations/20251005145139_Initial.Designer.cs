@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251004170801_NewModels")]
-    partial class NewModels
+    [Migration("20251005145139_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -121,7 +121,8 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("name");
 
                     b.HasKey("Id")
@@ -182,6 +183,9 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_users");
+
+                    b.HasIndex("RoleId")
+                        .HasDatabaseName("ix_users_role_id");
 
                     b.ToTable("users", (string)null);
                 });
@@ -258,6 +262,18 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Course");
                 });
 
+            modelBuilder.Entity("Domain.Users.User", b =>
+                {
+                    b.HasOne("Domain.Roles.Role.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_users_roles_role_id");
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("Domain.UsersSkills.UserSkill", b =>
                 {
                     b.HasOne("Domain.Skills.Skill", "Skill")
@@ -284,6 +300,11 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("CourseSkills");
 
                     b.Navigation("Lessons");
+                });
+
+            modelBuilder.Entity("Domain.Roles.Role.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Domain.Skills.Skill", b =>

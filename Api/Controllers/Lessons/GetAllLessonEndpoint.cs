@@ -1,11 +1,11 @@
+using Api.Dtos;
 using Application.Lessons.Queries;
-using Domain.Lessons;
 using FastEndpoints;
 using MediatR;
 
 namespace Api.Controllers.Lessons;
 
-public class GetAllLessonEndpoint : EndpointWithoutRequest<List<Lesson>>
+public class GetAllLessonEndpoint : EndpointWithoutRequest<List<LessonDto>>
 {
     private readonly IMediator _mediator;
 
@@ -23,6 +23,6 @@ public class GetAllLessonEndpoint : EndpointWithoutRequest<List<Lesson>>
     public override async Task HandleAsync(CancellationToken ct)
     {
         var lessons = await _mediator.Send(new GetAllLessonQuery(), ct);
-        Response = lessons.ToList();
+        Response = lessons.Select(LessonDto.FromDomainModel).ToList(); ;
     }
 }

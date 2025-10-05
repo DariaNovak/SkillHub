@@ -1,11 +1,11 @@
 using FastEndpoints;
 using MediatR;
 using Application.Roles.Commands;
-using Domain.Roles.Role;
+using Api.Dtos;
 
 namespace Api.Controllers.Roles;
 
-public class CreateRoleEndpoint : Endpoint<CreateRoleCommand, Role>
+public class CreateRoleEndpoint : Endpoint<CreateRoleCommand, RoleDto>
 {
     private readonly IMediator _mediator;
 
@@ -23,6 +23,6 @@ public class CreateRoleEndpoint : Endpoint<CreateRoleCommand, Role>
     public override async Task HandleAsync(CreateRoleCommand req, CancellationToken ct)
     {
         var role = await _mediator.Send(req, ct);
-        Response = role;
+        Response = RoleDto.FromDomainModel(role);
     }
 }

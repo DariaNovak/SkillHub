@@ -1,11 +1,11 @@
 using FastEndpoints;
 using MediatR;
 using Application.Lessons.Commands;
-using Domain.Lessons;
+using Api.Dtos;
 
 namespace Api.Controllers.Lessons;
 
-public class CreateLessonEndpoint : Endpoint<CreateLessonCommand, Lesson>
+public class CreateLessonEndpoint : Endpoint<CreateLessonCommand, LessonDto>
 {
     private readonly IMediator _mediator;
 
@@ -23,6 +23,6 @@ public class CreateLessonEndpoint : Endpoint<CreateLessonCommand, Lesson>
     public override async Task HandleAsync(CreateLessonCommand req, CancellationToken ct)
     {
         var lesson = await _mediator.Send(req, ct);
-        Response = lesson;
+        Response = LessonDto.FromDomainModel(lesson);
     }
 }

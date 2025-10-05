@@ -1,11 +1,11 @@
+using Api.Dtos;
 using Application.Courses.Queries;
-using Domain.Courses;
 using FastEndpoints;
 using MediatR;
 
 namespace Api.Controllers.Courses;
 
-public class GetAllCourseEndpoint : EndpointWithoutRequest<List<Course>>
+public class GetAllCourseEndpoint : EndpointWithoutRequest<List<CourseDto>>
 {
     private readonly IMediator _mediator;
 
@@ -23,6 +23,6 @@ public class GetAllCourseEndpoint : EndpointWithoutRequest<List<Course>>
     public override async Task HandleAsync(CancellationToken ct)
     {
         var courses = await _mediator.Send(new GetAllCoursesQuery(), ct);
-        Response = courses.ToList();
+        Response = courses.Select(CourseDto.FromDomainModel).ToList(); ;
     }
 }

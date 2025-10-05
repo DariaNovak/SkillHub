@@ -24,6 +24,14 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasDefaultValueSql("timezone('utc', now())")
             .IsRequired();
 
+        builder.Property(x => x.RoleId)
+           .IsRequired();
+
+        builder.HasOne(x => x.Role)
+            .WithMany(x => x.Users)
+            .HasForeignKey(x => x.RoleId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         // One-to-Many: User -> Skills
         builder.HasMany(x => x.UserSkills)
             .WithOne(x => x.User)

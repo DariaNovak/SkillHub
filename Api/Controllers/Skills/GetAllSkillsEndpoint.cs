@@ -1,12 +1,11 @@
+using Api.Dtos;
+using Application.Skills.Queries;
 using FastEndpoints;
 using MediatR;
-using Application.Skills.Queries;
-using Domain.Skills;
-using System.Collections.Generic;
 
 namespace Api.Controllers.Skills;
 
-public class GetAllSkillsEndpoint : Endpoint<GetAllSkillsQuery, IEnumerable<Skill>>
+public class GetAllSkillsEndpoint : EndpointWithoutRequest<List<SkillDto>>
 {
     private readonly IMediator _mediator;
 
@@ -21,9 +20,9 @@ public class GetAllSkillsEndpoint : Endpoint<GetAllSkillsQuery, IEnumerable<Skil
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(GetAllSkillsQuery req, CancellationToken ct)
+    public override async Task HandleAsync( CancellationToken ct)
     {
-        var skills = await _mediator.Send(req, ct);
-        Response = skills;
+        var skills = await _mediator.Send(new GetAllSkillsQuery(), ct);
+        Response = skills.Select(SkillDto.FromDomainModel).ToList(); ;
     }
 }

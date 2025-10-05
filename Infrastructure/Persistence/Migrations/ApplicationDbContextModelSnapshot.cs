@@ -178,18 +178,11 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("role_id");
 
-                    b.Property<Guid>("RoleId1")
-                        .HasColumnType("uuid")
-                        .HasColumnName("role_id1");
-
                     b.HasKey("Id")
                         .HasName("pk_users");
 
                     b.HasIndex("RoleId")
                         .HasDatabaseName("ix_users_role_id");
-
-                    b.HasIndex("RoleId1")
-                        .HasDatabaseName("ix_users_role_id1");
 
                     b.ToTable("users", (string)null);
                 });
@@ -268,19 +261,12 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Users.User", b =>
                 {
-                    b.HasOne("Domain.Roles.Role.Role", null)
-                        .WithMany()
+                    b.HasOne("Domain.Roles.Role.Role", "Role")
+                        .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_users_roles_role_id");
-
-                    b.HasOne("Domain.Roles.Role.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_users_roles_role_id1");
 
                     b.Navigation("Role");
                 });
@@ -311,6 +297,11 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("CourseSkills");
 
                     b.Navigation("Lessons");
+                });
+
+            modelBuilder.Entity("Domain.Roles.Role.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Domain.Skills.Skill", b =>
