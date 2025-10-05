@@ -47,10 +47,17 @@ namespace Domain.Users
                 DateTime.Now);
         }
 
-        public void UpdateInfo(string name, string email)
+        public void UpdateInfo(string name,
+            string email,
+            string passwordHash,
+            Guid roleId,
+            DateTime joinDate)
         {
             Name = name;
             Email = email;
+            PasswordHash = passwordHash;
+            RoleId = roleId;
+            JoinDate = joinDate;
         }
     }
 }

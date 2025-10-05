@@ -1,6 +1,4 @@
-﻿using Domain.Roles;
-using Domain.Roles.Role;
-using Domain.Users;
+﻿using Domain.Users;
 
 namespace Api.Dtos;
 
@@ -40,5 +38,3 @@ public record UpdateUserDto(
 public record DeleteUserDto(Guid Id);
 
 public record GetUserByIdDto(Guid Id);
-
-public record GetAllUsersDto();

@@ -1,13 +1,11 @@
-﻿using Application.Common.Interfaces.Repositories;
-using Domain.Roles;
-using Domain.Roles.Role;
-using Domain.Users;
+﻿using Application.Common.Interfaces.Queries;
+using Application.Common.Interfaces.Repositories;
 using MediatR;
 
 namespace Application.Users.Commands;
 
 public record UpdateUserCommand(
-    Guid UserId,
+    Guid Id,
     string Name,
     string Email,
     string PasswordHash,
@@ -16,11 +14,19 @@ public record UpdateUserCommand(
 ) : IRequest;
 
 public class UpdateUserCommandHandler(
-    IUserRepository userRepository) : IRequestHandler<UpdateUserCommand>
+    IUserRepository userRepository,
+    IUserQueries userQueries) : IRequestHandler<UpdateUserCommand>
 {
     public async Task Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
-        var user = User.New(
+        var user = await userQueries.GetByIdAsync(request.Id, cancellationToken);
+
+        if (user == null)
+        {
+            throw new Exception("User not found");
+        }
+
+        user.UpdateInfo(
             request.Name,
             request.Email,
             request.PasswordHash,

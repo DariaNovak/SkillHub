@@ -16,7 +16,7 @@
             return new Role(Guid.NewGuid(), name);
         }
 
-        public void UpdateRole(string name)
+        public void UpdateInfo(string name)
         {
             Name = name;
         }

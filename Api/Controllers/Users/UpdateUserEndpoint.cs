@@ -1,10 +1,11 @@
-﻿using FastEndpoints;
-using MediatR;
+﻿using Api.Dtos;
 using Application.Users.Commands;
+using FastEndpoints;
+using MediatR;
 
-namespace Api.Controllers.Users;
+namespace Api.Endpoints.Users;
 
-public class UpdateUserEndpoint : Endpoint<UpdateUserCommand>
+public class UpdateUserEndpoint : Endpoint<UpdateUserDto>
 {
     private readonly IMediator _mediator;
 
@@ -15,14 +16,22 @@ public class UpdateUserEndpoint : Endpoint<UpdateUserCommand>
 
     public override void Configure()
     {
-        Put("/users/{UserId}");
+        Put("/users/{id}");
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(UpdateUserCommand req, CancellationToken ct)
+    public override async Task HandleAsync(UpdateUserDto req, CancellationToken ct)
     {
-        await _mediator.Send(req, ct);
-        //replace with no content
-        Response = StatusCodes.Status204NoContent;
+        var command = new UpdateUserCommand(
+            req.Id,
+            req.Name,
+            req.Email,
+            req.PasswordHash,
+            req.RoleId,
+            req.JoinDate
+        );
+
+        await _mediator.Send(command, ct);
+        HttpContext.Response.StatusCode = StatusCodes.Status204NoContent;
     }
 }
