@@ -4,10 +4,13 @@ using FluentValidation;
 
 namespace Api.Modules.Validators.Users;
 
-public class CreateUserDtoValidator : Validator<CreateUserDto>
+public class UpdateUserDtoValidator : Validator<UpdateUserDto>
 {
-    public CreateUserDtoValidator()
+    public UpdateUserDtoValidator()
     {
+        RuleFor(x => x.Id)
+            .NotEmpty();
+
         RuleFor(x => x.Name)
             .NotEmpty()
             .MinimumLength(3);
@@ -21,7 +24,7 @@ public class CreateUserDtoValidator : Validator<CreateUserDto>
             .MinimumLength(6);
 
         RuleFor(x => x.RoleId)
-            .NotNull();
+            .NotEmpty();
 
         RuleFor(x => x.JoinDate)
             .NotEmpty();

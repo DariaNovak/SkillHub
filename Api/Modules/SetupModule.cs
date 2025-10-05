@@ -1,5 +1,6 @@
 ﻿using Api.Filters;
 using Application.Common.Settings;
+using FastEndpoints;
 using FluentValidation;
 
 namespace Api.Modules;
@@ -29,7 +30,7 @@ public static class SetupModule
 
     private static void AddRequestValidators(this IServiceCollection services)
     {
-        services.AddValidatorsFromAssemblyContaining<Program>();
+        services.AddFastEndpoints().AddValidatorsFromAssemblyContaining<Program>();
     }
 
     private static void AddApplicationSettings(this IServiceCollection services, IConfiguration configuration)

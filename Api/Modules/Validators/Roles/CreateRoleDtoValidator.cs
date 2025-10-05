@@ -1,9 +1,10 @@
 using Api.Dtos;
+using FastEndpoints;
 using FluentValidation;
 
 namespace Api.Modules.Validators.Roles;
 
-public class CreateRoleDtoValidator : AbstractValidator<CreateRoleDto>
+public class CreateRoleDtoValidator : Validator<CreateRoleDto>
 {
     public CreateRoleDtoValidator()
     {

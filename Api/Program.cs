@@ -17,13 +17,13 @@ namespace Api
             builder.Services.AddPersistenceServices(builder.Configuration);
 
             builder.Services.AddFastEndpoints();
-            builder.Services.SwaggerDocument(); // Register FastEndpoints Swagger
+            builder.Services.SwaggerDocument(); 
 
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwaggerGen(); // Use FastEndpoints Swagger middleware
+                app.UseSwaggerGen();
                 app.UseSwaggerUI();
             }
 

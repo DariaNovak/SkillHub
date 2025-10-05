@@ -4,10 +4,13 @@ using FluentValidation;
 
 namespace Api.Modules.Validators.Skills;
 
-public class CreateSkillDtoValidator : Validator<CreateSkillDto>
+public class UpdateSkillDtoValidator : Validator<UpdateSkillDto>
 {
-    public CreateSkillDtoValidator()
+    public UpdateSkillDtoValidator()
     {
+        RuleFor(x => x.Id)
+            .NotEmpty();
+
         RuleFor(x => x.Name)
             .NotEmpty()
             .MinimumLength(2);

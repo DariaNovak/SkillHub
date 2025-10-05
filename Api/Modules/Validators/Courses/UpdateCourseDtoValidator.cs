@@ -4,10 +4,13 @@ using FluentValidation;
 
 namespace Api.Modules.Validators.Courses;
 
-public class CreateCourseDtoValidator : Validator<CreateCourseDto>
+public class UpdateCourseDtoValidator : Validator<UpdateCourseDto>
 {
-    public CreateCourseDtoValidator()
+    public UpdateCourseDtoValidator()
     {
+        RuleFor(x => x.Id)
+            .NotEmpty();
+
         RuleFor(x => x.Title)
             .NotEmpty()
             .MinimumLength(3);
