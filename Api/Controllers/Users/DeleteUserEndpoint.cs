@@ -1,10 +1,11 @@
 ﻿using FastEndpoints;
 using MediatR;
 using Application.Users.Commands;
+using Api.Dtos;
 
 namespace Api.Controllers.Users;
 
-public class DeleteUserEndpoint : Endpoint<DeleteUserCommand>
+public class DeleteUserEndpoint : Endpoint<DeleteUserDto>
 {
     private readonly IMediator _mediator;
 
@@ -19,9 +20,10 @@ public class DeleteUserEndpoint : Endpoint<DeleteUserCommand>
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(DeleteUserCommand req, CancellationToken ct)
+    public override async Task HandleAsync(DeleteUserDto req, CancellationToken ct)
     {
-        await _mediator.Send(req, ct);
+        var command = new DeleteUserCommand(req.Id);
+        await _mediator.Send(command, ct);
         Response = StatusCodes.Status204NoContent;
     }
 }

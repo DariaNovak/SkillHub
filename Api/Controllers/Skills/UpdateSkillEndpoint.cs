@@ -3,7 +3,7 @@ using Application.Skills.Commands;
 using FastEndpoints;
 using MediatR;
 
-namespace Api.Endpoints.Skills;
+namespace Api.Controllers.Skills;
 
 public class UpdateSkillEndpoint : Endpoint<UpdateSkillDto>
 {
@@ -22,7 +22,11 @@ public class UpdateSkillEndpoint : Endpoint<UpdateSkillDto>
 
     public override async Task HandleAsync(UpdateSkillDto req, CancellationToken ct)
     {
-        var command = new UpdateSkillsCommand { Id = req.Id, Name = req.Name };
+        var command = new UpdateSkillsCommand
+        {
+            Id = req.Id,
+            Name = req.Name
+        };
 
         await _mediator.Send(command, ct);
         HttpContext.Response.StatusCode = StatusCodes.Status204NoContent;

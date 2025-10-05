@@ -3,7 +3,7 @@ using Application.Roles.Commands;
 using FastEndpoints;
 using MediatR;
 
-namespace Api.Endpoints.Roles;
+namespace Api.Controllers.Roles;
 
 public class UpdateRoleEndpoint : Endpoint<UpdateRoleDto>
 {

@@ -1,11 +1,11 @@
+using Api.Dtos;
+using Application.Courses.Commands;
 using FastEndpoints;
 using MediatR;
-using Application.Courses.Commands;
-using Api.Dtos;
 
 namespace Api.Controllers.Courses;
 
-public class CreateCourseEndpoint : Endpoint<CreateCourseCommand, CourseDto>
+public class CreateCourseEndpoint : Endpoint<CreateCourseDto, CourseDto>
 {
     private readonly IMediator _mediator;
 
@@ -20,9 +20,15 @@ public class CreateCourseEndpoint : Endpoint<CreateCourseCommand, CourseDto>
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(CreateCourseCommand req, CancellationToken ct)
+    public override async Task HandleAsync(CreateCourseDto req, CancellationToken ct)
     {
-        var course = await _mediator.Send(req, ct);
+        var command = new CreateCourseCommand
+        {
+            Title = req.Title,
+            Description = req.Description,
+            AuthorId = req.AuthorId
+        };
+        var course = await _mediator.Send(command, ct);
         Response = CourseDto.FromDomainModel(course);
     }
 }

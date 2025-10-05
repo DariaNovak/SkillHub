@@ -3,7 +3,7 @@ using Application.Roles.Queries;
 using FastEndpoints;
 using MediatR;
 
-namespace Api.Endpoints.Roles;
+namespace Api.Controllers.Roles;
 
 public class GetRoleByIdEndpoint : EndpointWithoutRequest<RoleDto>
 {

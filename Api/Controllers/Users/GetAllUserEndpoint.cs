@@ -22,7 +22,9 @@ public class GetUsersEndpoint : EndpointWithoutRequest<List<UserDto>>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var users = await _mediator.Send(new GetAllUsersQuery(), ct);
-        Response = users.Select(UserDto.FromDomainModel).ToList(); ;
+        var query = new GetAllUsersQuery();
+        var users = await _mediator.Send(query, ct);
+        var dtos = users.Select(UserDto.FromDomainModel).ToList();
+        Response = dtos;
     }
 }

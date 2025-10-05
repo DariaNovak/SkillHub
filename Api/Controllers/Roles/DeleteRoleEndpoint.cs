@@ -1,10 +1,11 @@
+using Api.Dtos;
+using Application.Roles.Commands;
 using FastEndpoints;
 using MediatR;
-using Application.Roles.Commands;
 
 namespace Api.Controllers.Roles;
 
-public class DeleteRoleEndpoint : Endpoint<DeleteRoleCommand>
+public class DeleteRoleEndpoint : Endpoint<DeleteRoleDto>
 {
     private readonly IMediator _mediator;
 
@@ -15,13 +16,15 @@ public class DeleteRoleEndpoint : Endpoint<DeleteRoleCommand>
 
     public override void Configure()
     {
-        Delete("/roles/{RoleId}");
+        Delete("/roles/{id}");
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(DeleteRoleCommand req, CancellationToken ct)
+    public override async Task HandleAsync(DeleteRoleDto req, CancellationToken ct)
     {
-        await _mediator.Send(req, ct);
-        Response = StatusCodes.Status204NoContent;
+        var command = new DeleteRoleCommand(req.Id);
+
+        await _mediator.Send(command, ct);
+        HttpContext.Response.StatusCode = StatusCodes.Status204NoContent;
     }
 }

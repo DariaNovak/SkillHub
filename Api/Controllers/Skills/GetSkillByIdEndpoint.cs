@@ -3,7 +3,7 @@ using Application.Skills.Queries;
 using FastEndpoints;
 using MediatR;
 
-namespace Api.Endpoints.Skills;
+namespace Api.Controllers.Skills;
 
 public class GetSkillByIdEndpoint : EndpointWithoutRequest<SkillDto>
 {

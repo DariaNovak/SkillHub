@@ -1,10 +1,11 @@
+using Api.Dtos;
+using Application.Lessons.Commands;
 using FastEndpoints;
 using MediatR;
-using Application.Lessons.Commands;
 
 namespace Api.Controllers.Lessons;
 
-public class DeleteLessonEndpoint : Endpoint<DeleteLessonCommand>
+public class DeleteLessonEndpoint : Endpoint<DeleteLessonDto>
 {
     private readonly IMediator _mediator;
 
@@ -15,13 +16,15 @@ public class DeleteLessonEndpoint : Endpoint<DeleteLessonCommand>
 
     public override void Configure()
     {
-        Delete("/lessons/{LessonId}");
+        Delete("/lessons/{id}");
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(DeleteLessonCommand req, CancellationToken ct)
+    public override async Task HandleAsync(DeleteLessonDto req, CancellationToken ct)
     {
-        await _mediator.Send(req, ct);
-        Response = StatusCodes.Status204NoContent;
+        var command = new DeleteLessonCommand(req.Id);
+
+        await _mediator.Send(command, ct);
+        HttpContext.Response.StatusCode = StatusCodes.Status204NoContent;
     }
 }

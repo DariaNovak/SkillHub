@@ -1,10 +1,11 @@
+using Api.Dtos;
+using Application.Skills.Commands;
 using FastEndpoints;
 using MediatR;
-using Application.Skills.Commands;
 
 namespace Api.Controllers.Skills;
 
-public class DeleteSkillEndpoint : Endpoint<DeleteSkillsCommand>
+public class DeleteSkillEndpoint : Endpoint<DeleteSkillDto>
 {
     private readonly IMediator _mediator;
 
@@ -15,13 +16,15 @@ public class DeleteSkillEndpoint : Endpoint<DeleteSkillsCommand>
 
     public override void Configure()
     {
-        Delete("/skills/{SkillId}");
+        Delete("/skills/{id}");
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(DeleteSkillsCommand req, CancellationToken ct)
+    public override async Task HandleAsync(DeleteSkillDto  req, CancellationToken ct)
     {
-        await _mediator.Send(req, ct);
-        Response = StatusCodes.Status204NoContent;
+        var command = new DeleteSkillsCommand(req.Id);
+
+        await _mediator.Send(command, ct);
+        HttpContext.Response.StatusCode = StatusCodes.Status204NoContent;
     }
 }

@@ -3,7 +3,7 @@ using Application.Courses.Commands;
 using FastEndpoints;
 using MediatR;
 
-namespace Api.Endpoints.Courses;
+namespace Api.Controllers.Courses;
 
 public class UpdateCourseEndpoint : Endpoint<UpdateCourseDto>
 {

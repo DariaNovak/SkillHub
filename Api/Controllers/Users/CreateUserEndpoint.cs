@@ -1,11 +1,14 @@
-﻿using FastEndpoints;
-using MediatR;
+﻿using Api.Dtos;
 using Application.Users.Commands;
-using Api.Dtos;
+using Domain.Roles.Role;
+using FastEndpoints;
+using MediatR;
+using Microsoft.AspNetCore.Identity;
+using System.Xml.Linq;
 
 namespace Api.Controllers.Users;
 
-public class CreateUserEndpoint : Endpoint<CreateUserCommand, UserDto>
+public class CreateUserEndpoint : Endpoint<CreateUserDto, UserDto>
 {
     private readonly IMediator _mediator;
 
@@ -20,9 +23,17 @@ public class CreateUserEndpoint : Endpoint<CreateUserCommand, UserDto>
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(CreateUserCommand req, CancellationToken ct)
+    public override async Task HandleAsync(CreateUserDto req, CancellationToken ct)
     {
-        var user = await _mediator.Send(req, ct);
+        var command = new CreateUserCommand
+        {
+            Name = req.Name,
+            Email = req.Email,
+            PasswordHash = req.PasswordHash,
+            RoleId = req.RoleId,
+            JoinDate = req.JoinDate
+        };
+        var user = await _mediator.Send(command, ct);
         Response = UserDto.FromDomainModel(user);
     }
 }

@@ -3,7 +3,7 @@ using Application.Courses.Queries;
 using FastEndpoints;
 using MediatR;
 
-namespace Api.Endpoints.Courses;
+namespace Api.Controllers.Courses;
 
 public class GetCourseByIdEndpoint : EndpointWithoutRequest<CourseDto>
 {

@@ -1,11 +1,11 @@
+using Api.Dtos;
+using Application.Skills.Commands;
 using FastEndpoints;
 using MediatR;
-using Application.Skills.Commands;
-using Api.Dtos;
 
 namespace Api.Controllers.Skills;
 
-public class CreateSkillEndpoint : Endpoint<CreateSkillsCommand, SkillDto>
+public class CreateSkillEndpoint : Endpoint<CreateSkillDto, SkillDto>
 {
     private readonly IMediator _mediator;
 
@@ -20,9 +20,13 @@ public class CreateSkillEndpoint : Endpoint<CreateSkillsCommand, SkillDto>
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(CreateSkillsCommand req, CancellationToken ct)
+    public override async Task HandleAsync(CreateSkillDto req, CancellationToken ct)
     {
-        var skill = await _mediator.Send(req, ct);
+        var command = new CreateSkillsCommand
+        {
+            Name = req.Name
+        };
+        var skill = await _mediator.Send(command, ct);
         Response = SkillDto.FromDomainModel(skill);
     }
 }

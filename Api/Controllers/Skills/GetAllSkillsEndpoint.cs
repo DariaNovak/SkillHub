@@ -20,9 +20,10 @@ public class GetAllSkillsEndpoint : EndpointWithoutRequest<List<SkillDto>>
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync( CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
-        var skills = await _mediator.Send(new GetAllSkillsQuery(), ct);
-        Response = skills.Select(SkillDto.FromDomainModel).ToList(); ;
+        var query = new GetAllSkillsQuery();
+        var skills = await _mediator.Send(query, ct);
+        Response = skills.Select(SkillDto.FromDomainModel).ToList();
     }
 }

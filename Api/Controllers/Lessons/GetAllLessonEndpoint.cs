@@ -22,7 +22,8 @@ public class GetAllLessonEndpoint : EndpointWithoutRequest<List<LessonDto>>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var lessons = await _mediator.Send(new GetAllLessonQuery(), ct);
-        Response = lessons.Select(LessonDto.FromDomainModel).ToList(); ;
+        var query = new GetAllLessonQuery();
+        var lessons = await _mediator.Send(query, ct);
+        Response = lessons.Select(LessonDto.FromDomainModel).ToList();
     }
 }
