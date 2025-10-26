@@ -1,5 +1,6 @@
 ﻿using Domain.Users;
 using Infrastructure.Persistence.Converters;
+using LanguageExt.ClassInstances;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,6 +11,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).HasConversion(x => x.Value, x => new UserId(x));
 
         builder.Property(x => x.Name)
             .HasColumnType("varchar(255)")

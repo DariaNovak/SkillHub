@@ -5,7 +5,7 @@ namespace Domain.Users
 {
     public class User
     {
-        public Guid Id { get; private set; } 
+        public UserId Id { get; private set; } 
         public string Name { get; set; } 
         public string Email { get; set; } 
         public string PasswordHash { get; private set; } 
@@ -17,7 +17,7 @@ namespace Domain.Users
 
 
         private User(
-            Guid id,
+            UserId id,
             string name,
             string email,
             string passwordHash,
@@ -32,6 +32,7 @@ namespace Domain.Users
             JoinDate = joinDate;
         }
         public static User New(
+            UserId id,
             string name,
             string email,
             string passwordHash,
@@ -39,7 +40,7 @@ namespace Domain.Users
             DateTime joinDate)
         {
             return new User(
-              Guid.NewGuid(),
+                id,
                 name,
                 email,
                 passwordHash,

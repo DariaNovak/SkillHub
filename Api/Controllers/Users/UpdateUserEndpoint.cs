@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Api.Endpoints.Users;
 
-public class UpdateUserEndpoint : Endpoint<UpdateUserDto>
+public class UpdateUserEndpoint : Endpoint<UpdateUserDto, UserDto>
 {
     private readonly IMediator _mediator;
 
@@ -22,16 +22,21 @@ public class UpdateUserEndpoint : Endpoint<UpdateUserDto>
 
     public override async Task HandleAsync(UpdateUserDto req, CancellationToken ct)
     {
-        var command = new UpdateUserCommand(
-            req.Id,
-            req.Name,
-            req.Email,
-            req.PasswordHash,
-            req.RoleId,
-            req.JoinDate
-        );
+        var command = new UpdateUserCommand
+        {
+            UserId = req.Id,
+            Name = req.Name,
+            Email = req.Email,
+            PasswordHash = req.PasswordHash,
+            RoleId = req.RoleId,
+            JoinDate = req.JoinDate
+        };
 
-        await _mediator.Send(command, ct);
-        HttpContext.Response.StatusCode = StatusCodes.Status204NoContent;
+        var result = await _mediator.Send(command, ct);
+
+        result.Match(
+            Right: user => Response = UserDto.FromDomainModel(user),
+            Left: ex => ThrowError(ex.Message)
+        );
     }
 }

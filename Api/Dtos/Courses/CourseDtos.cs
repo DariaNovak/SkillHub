@@ -21,14 +21,12 @@ public record CourseDto(
 public record CreateCourseDto(
     string Title,
     string Description,
-    Guid AuthorId,
-    DateTime CreatedAt);
+    Guid AuthorId);
 
 public record UpdateCourseDto(
     Guid Id,
     string Title,
-    string Description,
-    DateTime CreatedAt);
+    string Description);
 
 public record DeleteCourseDto(Guid Id);
 

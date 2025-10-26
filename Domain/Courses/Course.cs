@@ -34,7 +34,7 @@ namespace Domain.Courses
                 title,
                 description,
                 authorId,
-                DateTime.Now
+                DateTime.UtcNow
             );
         }
 

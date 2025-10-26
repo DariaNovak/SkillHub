@@ -4,13 +4,18 @@ using MediatR;
 
 namespace Application.Users.Queries;
 
-public record GetAllUsersQuery() : IRequest<IReadOnlyList<User>>;
+public record GetAllUsersQuery : IRequest<IReadOnlyList<User>>;
 
-public class GetAllUsersQueryHandler(
-    IUserQueries userRepository) : IRequestHandler<GetAllUsersQuery, IReadOnlyList<User>>
+public class GetAllUsersQueryHandler(IUserQueries userQueries)
+    : IRequestHandler<GetAllUsersQuery, IReadOnlyList<User>>
 {
     public async Task<IReadOnlyList<User>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
     {
-        return await userRepository.GetAllAsync(cancellationToken);
+        var option = await userQueries.GetAllAsync(cancellationToken);
+
+        return option.Match(
+            Some: users => users,
+            None: () => Array.Empty<User>()
+        );
     }
 }

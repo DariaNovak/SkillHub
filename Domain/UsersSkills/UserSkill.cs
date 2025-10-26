@@ -5,26 +5,29 @@ namespace Domain.UsersSkills
 {
     public class UserSkill
     {
-        public Guid UserId { get; private set; }
-        public Guid SkillId { get; private set; }
+        public Guid Id { get; private set; }
 
+        public UserId UserId { get; set; }
         public User User { get; private set; }
+
+        public Guid SkillId { get; set; }
         public Skill Skill { get; private set; }
 
         public int ProficiencyLevel { get; private set; } // 1–5
         public DateTime AddedDate { get; private set; }
 
-        private UserSkill(Guid userId, Guid skillId, int proficiencyLevel)
+        private UserSkill(Guid id, UserId userId, Guid skillId, int proficiencyLevel, DateTime addedDate)
         {
+            Id = id;
             UserId = userId;
             SkillId = skillId;
             ProficiencyLevel = proficiencyLevel;
-            AddedDate = DateTime.Now;
+            AddedDate = addedDate;
         }
 
-        public static UserSkill New(User user, Skill skill, int proficiencyLevel = 3)
+        public static UserSkill New(UserId userId, Guid skillId, int proficiencyLevel = 3)
         {
-            return new UserSkill(user.Id, skill.Id, proficiencyLevel);
+            return new UserSkill(Guid.NewGuid(), userId, skillId, proficiencyLevel, DateTime.UtcNow);
         }
     }
 }
