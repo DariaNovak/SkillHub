@@ -16,7 +16,7 @@ public class DeleteUserEndpoint : Endpoint<DeleteUserDto>
 
     public override void Configure()
     {
-        Delete("/users");
+        Delete("/users/{id}");
         AllowAnonymous();
     }
 
@@ -24,7 +24,12 @@ public class DeleteUserEndpoint : Endpoint<DeleteUserDto>
     {
         var command = new DeleteUserCommand { UserId = req.Id };
 
-        await _mediator.Send(command, ct);
-        Response = null;
+        var result = await _mediator.Send(command, ct);
+
+        
+        await result.Match(
+            Right: async user => Send.NoContentAsync(ct),  
+            Left: async user => Send.NotFoundAsync(ct)      
+        );
     }
 }

@@ -17,16 +17,20 @@ namespace Tests.Api
 
         private readonly User _firstTestUser;
         private readonly User _secondTestUser;
+        private readonly Role testRole;
 
         public UserControllerTests(IntegrationTestWebFactory factory) : base(factory)
         {
-            _firstTestUser = UserData.FirstUser();
-            _secondTestUser = UserData.SecondUser();
+            testRole = Role.New("user");
+            _firstTestUser = UserData.FirstUser(testRole.Id);
+            _secondTestUser = UserData.SecondUser(testRole.Id);
         }
 
         public async Task InitializeAsync()
         {
-            // Додаємо тестові дані в БД
+            await Context.Roles.AddAsync(testRole);
+            await Context.SaveChangesAsync();
+
             await Context.Users.AddAsync(_firstTestUser);
             await Context.Users.AddAsync(_secondTestUser);
             await SaveChangesAsync();
@@ -34,7 +38,6 @@ namespace Tests.Api
 
         public async Task DisposeAsync()
         {
-            // Очищаємо БД після тестів
             Context.Users.RemoveRange(Context.Users);
             await SaveChangesAsync();
         }
@@ -88,6 +91,9 @@ namespace Tests.Api
                 await Context.SaveChangesAsync();
             }
 
+            var roleExists = await Context.Roles.AnyAsync(r => r.Id == existingRole.Id);
+            roleExists.Should().BeTrue("role must exist in DB before creating user");
+
             var request = new CreateUserCommand
             {
                 Name = "New Test User",
@@ -98,6 +104,7 @@ namespace Tests.Api
             };
 
             var response = await Client.PostAsJsonAsync(BaseRoute, request);
+
             response.IsSuccessStatusCode.Should().BeTrue();
             response.StatusCode.Should().Be(HttpStatusCode.Created);
 
@@ -108,9 +115,11 @@ namespace Tests.Api
             var dbUser = await Context.Users
                 .FirstOrDefaultAsync(u => u.Id == new UserId(userDto.Id.Value));
 
+
             dbUser.Should().NotBeNull();
             dbUser!.Name.Should().Be(request.Name);
             dbUser.Email.Should().Be(request.Email);
+            dbUser.RoleId.Should().Be(existingRole.Id);
         }
 
         [Fact]
@@ -136,13 +145,24 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldUpdateUser()
         {
+            var existingRole = await Context.Roles.FirstOrDefaultAsync();
+            if (existingRole == null)
+            {
+                existingRole = Role.New("admin");
+                Context.Roles.Add(existingRole);
+                await Context.SaveChangesAsync();
+            }
+
+            var roleExists = await Context.Roles.AnyAsync(r => r.Id == existingRole.Id);
+            roleExists.Should().BeTrue("role must exist in DB before creating user");
+
             var request = new UpdateUserCommand
             {
                 UserId = _firstTestUser.Id.Value,
                 Name = "Updated Name",
                 Email = "updated.email@example.com",
                 PasswordHash = "UpdatedPass123!",
-                RoleId = Guid.NewGuid(),
+                RoleId = existingRole.Id,
                 JoinDate = DateTime.UtcNow
             };
 

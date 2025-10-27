@@ -15,7 +15,7 @@ public class GetUserByIdQueryHandler(
         var option = await userQueries.GetByIdAsync(request.Id, cancellationToken);
         return option.Match(
             Some: user => user,
-            None: () => null
+            None: () => Option<User>.None
         );
     }
 }

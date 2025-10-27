@@ -1,41 +1,36 @@
 ﻿using Domain.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tests.Data.Users
 {
     public static class UserData
     {
-        public static User FirstUser() =>
+        public static User FirstUser(Guid roleId) =>
             User.New(
                 new UserId(Guid.NewGuid()),
                 "Alice Johnson",
                 "alice.johnson@example.com",
                 "hashed_password_1",
-                Guid.NewGuid(), 
+                roleId,
                 DateTime.Now
             );
 
-        public static User SecondUser() =>
+        public static User SecondUser(Guid roleId) =>
             User.New(
                 new UserId(Guid.NewGuid()),
                 "Bob Smith",
                 "bob.smith@example.com",
                 "hashed_password_2",
-                Guid.NewGuid(), 
+                roleId,
                 DateTime.Now
             );
 
-        public static User ThirdUser() =>
+        public static User ThirdUser(Guid roleId) =>
             User.New(
                 new UserId(Guid.NewGuid()),
                 "Charlie Brown",
                 "charlie.brown@example.com",
                 "hashed_password_3",
-                Guid.NewGuid(), 
+                roleId,
                 DateTime.Now
             );
 
