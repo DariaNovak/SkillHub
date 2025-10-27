@@ -1,4 +1,5 @@
 ﻿using Api.Dtos;
+using Api.Endpoints.Users;
 using Application.Users.Commands;
 using FastEndpoints;
 using MediatR;
@@ -33,9 +34,19 @@ public class CreateUserEndpoint : Endpoint<CreateUserDto, UserDto>
 
         var result = await _mediator.Send(command, ct);
 
-        result.Match(
-            Right: user => Response = UserDto.FromDomainModel(user),
-            Left: ex => ThrowError(ex.Message)
-        );
+        await result.Match(
+            Right: async user =>
+            {
+                var response = UserDto.FromDomainModel(user);
+                await Send.CreatedAtAsync<GetUserByIdEndpoint>(
+                    routeValues: new { id = user.Id.Value },
+                    responseBody: response,
+                    cancellation: ct
+                );
+            },
+            Left: async error =>
+            {
+                await Send.NoContentAsync();
+            });
     }
 }
