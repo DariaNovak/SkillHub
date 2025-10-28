@@ -3,7 +3,7 @@ using Domain.Courses;
 namespace Api.Dtos;
 
 public record CourseDto(
-    Guid Id,
+    CourseId Id,
     string Title,
     string Description,
     Guid AuthorId,

@@ -6,17 +6,17 @@ namespace Domain.Courses
 {
     public class Course
     {
-        public Guid Id { get; private set; }
+        public CourseId Id { get; private set; }
         public string Title { get; private set; }
         public string Description { get; private set; }
-        public Guid AuthorId { get; private set; } // FK → User
+        public UserId AuthorId { get; private set; } // FK → User
         public DateTime CreatedAt { get; private set; }
 
         public User Author { get; private set; }
         public ICollection<Lesson> Lessons { get; private set; }
         public ICollection<CourseSkill> CourseSkills { get; private set; }
 
-        private Course(Guid id, string title, string description, Guid authorId, DateTime createdAt)
+        private Course(CourseId id, string title, string description, UserId authorId, DateTime createdAt)
         {
             Id = id;
             Title = title;
@@ -27,10 +27,10 @@ namespace Domain.Courses
             CourseSkills = new List<CourseSkill>();
         }
 
-        public static Course New(string title, string description, Guid authorId)
+        public static Course New(string title, string description, UserId authorId)
         {
             return new Course(
-                Guid.NewGuid(),
+                CourseId.New(),
                 title,
                 description,
                 authorId,

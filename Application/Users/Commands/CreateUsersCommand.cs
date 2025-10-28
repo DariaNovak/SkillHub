@@ -38,7 +38,7 @@ public class CreateUserCommandHandler(
         try
         {
             var user = await userRepository.AddAsync(
-                User.New(UserId.New(), request.Name, request.Email, request.PasswordHash, request.RoleId, request.JoinDate),
+                User.New( request.Name, request.Email, request.PasswordHash, request.RoleId, request.JoinDate),
                 cancellationToken);
 
             return user;

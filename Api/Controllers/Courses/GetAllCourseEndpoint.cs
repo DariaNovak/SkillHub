@@ -2,6 +2,7 @@ using Api.Dtos;
 using Application.Courses.Queries;
 using FastEndpoints;
 using MediatR;
+using LanguageExt;
 
 namespace Api.Controllers.Courses;
 
@@ -24,6 +25,16 @@ public class GetAllCourseEndpoint : EndpointWithoutRequest<List<CourseDto>>
     {
         var query = new GetAllCoursesQuery();
         var courses = await _mediator.Send(query, ct);
-        Response = courses.Select(CourseDto.FromDomainModel).ToList();
+
+        if (courses == null || !courses.Any())
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+
+        var dtos = courses.Select(CourseDto.FromDomainModel).ToList();
+        await Send.OkAsync(dtos, ct);
     }
+
+
 }

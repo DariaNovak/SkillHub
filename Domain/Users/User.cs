@@ -32,7 +32,6 @@ namespace Domain.Users
             JoinDate = joinDate;
         }
         public static User New(
-            UserId id,
             string name,
             string email,
             string passwordHash,
@@ -40,7 +39,7 @@ namespace Domain.Users
             DateTime joinDate)
         {
             return new User(
-                id,
+                UserId.New(),
                 name,
                 email,
                 passwordHash,
