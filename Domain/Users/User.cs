@@ -5,15 +5,15 @@ namespace Domain.Users
 {
     public class User
     {
-        public UserId Id { get; set; } 
-        public string Name { get; set; } 
-        public string Email { get; set; } 
-        public string PasswordHash { get; private set; } 
+        public UserId Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string PasswordHash { get; private set; }
         public Guid RoleId { get; set; }
-        public Role Role { get ; set; } 
-        public DateTime JoinDate { get; private set; } 
+        public Role Role { get; set; }
+        public DateTime JoinDate { get; private set; }
 
-        public ICollection<UserSkill> UserSkills { get; private set; }
+        public ICollection<UserSkill> UserSkills { get; set; }
 
 
         private User(

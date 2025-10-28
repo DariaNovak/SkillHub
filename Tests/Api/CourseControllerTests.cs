@@ -1,6 +1,7 @@
 ﻿using Api.Dtos;
 using Application.Courses.Commands;
 using Domain.Courses;
+using Domain.Roles.Role;
 using Domain.Users;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -16,17 +17,31 @@ namespace Tests.Api
     {
         private const string BaseRoute = "http://localhost:5078/courses";
 
-        private readonly Course _firstTestCourse;
-        private readonly Course _secondTestCourse;
+        private Course _firstTestCourse;
+        private Course _secondTestCourse;
+        private Role _testRole;
+        private User _firstAuthor;
+        private User _secondAuthor;
 
-        public CourseControllerTests(IntegrationTestWebFactory factory) : base(factory)
-        {
-            _firstTestCourse = CourseData.FirstCourse();
-            _secondTestCourse = CourseData.SecondCourse();
-        }
+        public CourseControllerTests(IntegrationTestWebFactory factory) : base(factory) { }
 
         public async Task InitializeAsync()
         {
+            // 1. Створюємо тестову роль
+            _testRole = Role.New("user");
+            await Context.Roles.AddAsync(_testRole);
+            await SaveChangesAsync();
+
+            // 2. Створюємо авторів курсів
+            _firstAuthor = UserData.FirstUser(_testRole.Id);
+            _secondAuthor = UserData.SecondUser(_testRole.Id);
+            await Context.Users.AddAsync(_firstAuthor);
+            await Context.Users.AddAsync(_secondAuthor);
+            await SaveChangesAsync();
+
+            // 3. Створюємо курси з існуючими авторами
+            _firstTestCourse = CourseData.FirstCourse(_firstAuthor.Id);
+            _secondTestCourse = CourseData.SecondCourse(_secondAuthor.Id);
             await Context.Courses.AddAsync(_firstTestCourse);
             await Context.Courses.AddAsync(_secondTestCourse);
             await SaveChangesAsync();
@@ -36,6 +51,7 @@ namespace Tests.Api
         {
             Context.Courses.RemoveRange(Context.Courses);
             Context.Users.RemoveRange(Context.Users);
+            Context.Roles.RemoveRange(Context.Roles);
             await SaveChangesAsync();
         }
 
@@ -80,26 +96,37 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldCreateCourse()
         {
+            // 1. Створюємо автора, який реально існує у БД
+            var newAuthor = UserData.ThirdUser(_testRole.Id);
+            await Context.Users.AddAsync(newAuthor);
+            await SaveChangesAsync();
 
-            var request = new CreateCourseCommand
-            {
-                Id = CourseId.New(),
-                Title = "New Test Course",
-                Description = "Course Description",
-                AuthorId = UserId.New()
-            };
+            // 2. Створюємо DTO для POST (без ID, бо сервер генерує його)
+            var request = new CreateCourseDto(
+                Title: "New Test Course",
+                Description: "Course Description",
+                AuthorId: newAuthor.Id
+            );
 
+            // 3. Виконуємо POST
             var response = await Client.PostAsJsonAsync(BaseRoute, request);
 
+            // 4. Перевірка HTTP статусу
             response.IsSuccessStatusCode.Should().BeTrue();
             response.StatusCode.Should().Be(HttpStatusCode.Created);
 
+            // 5. Десеріалізуємо відповідь
             var courseDto = await response.ToResponseModel<CourseDto>();
             courseDto.Should().NotBeNull();
             courseDto!.Title.Should().Be(request.Title);
+            courseDto.Description.Should().Be(request.Description);
+            courseDto.AuthorId.Should().Be(request.AuthorId);
+            courseDto.Id.Should().NotBeNull();
 
+            // 6. Перевірка у базі даних - використовуємо ID з відповіді!
             var dbCourse = await Context.Courses
-                .FirstOrDefaultAsync(c => c.Id == request.Id);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == courseDto.Id);
 
             dbCourse.Should().NotBeNull();
             dbCourse!.Title.Should().Be(request.Title);
@@ -114,12 +141,16 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldUpdateCourse()
         {
+            var updatedAuthor = UserData.ThirdUser(_testRole.Id);
+            await Context.Users.AddAsync(updatedAuthor);
+            await SaveChangesAsync();
+
             var request = new UpdateCourseCommand
             {
                 CourseId = _firstTestCourse.Id,
                 Title = "Updated Title",
                 Description = "Updated Description",
-                AuthorId = UserId.New()
+                AuthorId = updatedAuthor.Id
             };
 
             var response = await Client.PutAsJsonAsync($"{BaseRoute}/{_firstTestCourse.Id.Value}", request);
@@ -139,11 +170,15 @@ namespace Tests.Api
         public async Task ShouldReturnNotFoundWhenUpdatingNonExistentCourse()
         {
             var nonExistentId = Guid.NewGuid();
+            var newAuthor = UserData.ThirdUser(_testRole.Id);
+            await Context.Users.AddAsync(newAuthor);
+            await SaveChangesAsync();
+
             var request = new UpdateCourseCommand
             {
                 CourseId = new CourseId(nonExistentId),
                 Title = "Nonexistent",
-                Description = "None",
+                Description = "Nonessssss",
                 AuthorId = UserId.New()
             };
 

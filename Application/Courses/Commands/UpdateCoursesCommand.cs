@@ -30,7 +30,7 @@ public class UpdateCourseCommandHandler(
 
         return await course.MatchAsync(
             c => UpdateEntity(request, c, cancellationToken),
-            () => new CourseNotFoundException(request.CourseId));
+            () => new CourseNotFoundException(request.CourseId.Value));
     }
 
     private async Task<Either<CourseException, Course>> UpdateEntity(
@@ -47,7 +47,7 @@ public class UpdateCourseCommandHandler(
         }
         catch (Exception exception)
         {
-            return new UnhandledCourseException(course.Id, exception);
+            return new UnhandledCourseException(course.Id.Value, exception);
         }
     }
 }

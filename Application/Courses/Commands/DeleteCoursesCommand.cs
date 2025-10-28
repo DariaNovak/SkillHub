@@ -27,7 +27,7 @@ public class DeleteCourseCommandHandler(
 
         return await course.MatchAsync(
             c => DeleteEntity(c.Id, cancellationToken),
-            () => new CourseNotFoundException(courseId));
+            () => new CourseNotFoundException(courseId.Value));
     }
 
     private async Task<Either<CourseException, Unit>> DeleteEntity(
@@ -41,7 +41,7 @@ public class DeleteCourseCommandHandler(
         }
         catch (Exception exception)
         {
-            return new UnhandledCourseException(id, exception);
+            return new UnhandledCourseException(id.Value, exception);
         }
     }
 }

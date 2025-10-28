@@ -2,18 +2,18 @@
 
 namespace Application.Courses.Exceptions
 {
-    public abstract class CourseException(CourseId courseId, string message, Exception? innerException = null)
+    public abstract class CourseException(Guid courseId, string message, Exception? innerException = null)
         : Exception(message, innerException)
     {
-        public CourseId CourseId { get; } = courseId;
+        public Guid CourseId { get; } = courseId;
     }
 
-    public class CourseAlreadyExistsException(CourseId courseId)
+    public class CourseAlreadyExistsException(Guid courseId)
         : CourseException(courseId, $"Course already exists under id {courseId}");
 
-    public class CourseNotFoundException(CourseId courseId)
+    public class CourseNotFoundException(Guid courseId)
         : CourseException(courseId, $"Course not found under id {courseId}");
 
-    public class UnhandledCourseException(CourseId courseId, Exception? innerException = null)
+    public class UnhandledCourseException(Guid courseId, Exception? innerException = null)
         : CourseException(courseId, "Unexpected error occurred", innerException);
 }

@@ -25,7 +25,7 @@ public record CreateCourseDto(
     UserId AuthorId);
 
 public record UpdateCourseDto(
-    CourseId Id,
+    Guid Id,
     string Title,
     string Description,
     UserId AuthorId);
