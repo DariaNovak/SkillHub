@@ -1,7 +1,10 @@
 using Api.Dtos;
 using Application.Courses.Queries;
+using Domain.Courses;
 using FastEndpoints;
+using LanguageExt;
 using MediatR;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Api.Controllers.Courses;
 
@@ -22,14 +25,15 @@ public class GetCourseByIdEndpoint : EndpointWithoutRequest<CourseDto>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var id = Route<Guid>("id");
+        var id = Route<CourseId>("id");
+
         var query = new GetCourseByIdQuery(id);
-        var course = await _mediator.Send(query, ct);
-        if (course is null)
-        {
-            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-            return;
-        }
-        Response = CourseDto.FromDomainModel(course);
+
+        var command = await _mediator.Send(query, ct);
+
+        await command.Match(
+            Some: async course => Send.OkAsync(CourseDto.FromDomainModel(course)),
+            None: async () => Send.NotFoundAsync(ct)
+            );
     }
 }

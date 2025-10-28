@@ -1,4 +1,5 @@
 using Domain.Courses;
+using Domain.Users;
 
 namespace Api.Dtos;
 
@@ -6,7 +7,7 @@ public record CourseDto(
     CourseId Id,
     string Title,
     string Description,
-    Guid AuthorId,
+    UserId AuthorId,
     DateTime CreatedAt)
 {
     public static CourseDto FromDomainModel(Course course)
@@ -21,12 +22,13 @@ public record CourseDto(
 public record CreateCourseDto(
     string Title,
     string Description,
-    Guid AuthorId);
+    UserId AuthorId);
 
 public record UpdateCourseDto(
-    Guid Id,
+    CourseId Id,
     string Title,
-    string Description);
+    string Description,
+    UserId AuthorId);
 
 public record DeleteCourseDto(Guid Id);
 

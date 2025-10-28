@@ -1,3 +1,4 @@
+using Domain.Courses;
 using Domain.Lessons;
 
 namespace Api.Dtos;
@@ -6,7 +7,7 @@ public record LessonDto(
     Guid Id,
     string Title,
     string Content,
-    Guid CourseId,
+    CourseId CourseId,
     int Order)
 {
     public static LessonDto FromDomainModel(Lesson lesson)
@@ -21,7 +22,7 @@ public record LessonDto(
 public record CreateLessonDto(
     string Title,
     string Content,
-    Guid CourseId,
+    CourseId CourseId,
     int Order);
 
 public record UpdateLessonDto(

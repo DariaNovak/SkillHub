@@ -6,7 +6,6 @@ namespace Tests.Data.Users
     {
         public static User FirstUser(Guid roleId) =>
             User.New(
-                new UserId(Guid.NewGuid()),
                 "Alice Johnson",
                 "alice.johnson@example.com",
                 "hashed_password_1",
@@ -16,7 +15,6 @@ namespace Tests.Data.Users
 
         public static User SecondUser(Guid roleId) =>
             User.New(
-                new UserId(Guid.NewGuid()),
                 "Bob Smith",
                 "bob.smith@example.com",
                 "hashed_password_2",
@@ -26,7 +24,6 @@ namespace Tests.Data.Users
 
         public static User ThirdUser(Guid roleId) =>
             User.New(
-                new UserId(Guid.NewGuid()),
                 "Charlie Brown",
                 "charlie.brown@example.com",
                 "hashed_password_3",
@@ -40,7 +37,6 @@ namespace Tests.Data.Users
             string passwordHash,
             Guid roleId)
             => User.New(
-                new UserId(Guid.NewGuid()),
                 name,
                 email,
                 passwordHash,

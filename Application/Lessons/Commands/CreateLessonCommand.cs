@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Repositories;
+using Domain.Courses;
 using Domain.Lessons;
 using MediatR;
 
@@ -8,7 +9,7 @@ public record CreateLessonCommand : IRequest<Lesson>
 {
     public required string Title { get; init; }
     public required string Content { get; init; }
-    public required Guid CourseId { get; init; }
+    public required CourseId CourseId { get; init; }
     public required int Order { get; init; }
 }
 

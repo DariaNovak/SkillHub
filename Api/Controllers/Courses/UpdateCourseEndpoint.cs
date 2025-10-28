@@ -22,11 +22,13 @@ public class UpdateCourseEndpoint : Endpoint<UpdateCourseDto>
 
     public override async Task HandleAsync(UpdateCourseDto req, CancellationToken ct)
     {
-        var command = new UpdateCourseCommand(
-            req.Id,
-            req.Title,
-            req.Description
-        );
+        var command = new UpdateCourseCommand
+        {
+            CourseId = req.Id,
+            Title = req.Title,
+            Description = req.Description,
+            AuthorId = req.AuthorId
+        };
 
         await _mediator.Send(command, ct);
         HttpContext.Response.StatusCode = StatusCodes.Status204NoContent;

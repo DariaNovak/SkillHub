@@ -2,6 +2,7 @@ using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
 using Application.Courses.Exceptions;
 using Domain.Courses;
+using Domain.Users;
 using LanguageExt;
 using MediatR;
 
@@ -12,7 +13,7 @@ public record CreateCourseCommand : IRequest<Either<CourseException, Course>>
     public required CourseId Id { get; init; }
     public required string Title { get; init; }
     public required string Description { get; init; }
-    public required Guid AuthorId { get; init; }
+    public required UserId AuthorId { get; init; }
 }
 
 public class CreateCourseCommandHandler(
@@ -38,7 +39,7 @@ public class CreateCourseCommandHandler(
         try
         {
             var course = await courseRepository.AddAsync(
-                Course.New( request.Title, request.Description, request.AuthorId),
+                Course.New(request.Title, request.Description, request.AuthorId),
                 cancellationToken);
 
             return course;

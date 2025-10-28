@@ -7,12 +7,12 @@ namespace Domain.Lessons
         public Guid Id { get; private set; }
         public string Title { get; private set; }
         public string Content { get; private set; }
-        public Guid CourseId { get; private set; } // FK → Course
+        public CourseId CourseId { get; private set; } // FK → Course
         public int Order { get; private set; }
 
         public Course Course { get; private set; }
 
-        private Lesson(Guid id, string title, string content, Guid courseId, int order)
+        private Lesson(Guid id, string title, string content, CourseId courseId, int order)
         {
             Id = id;
             Title = title;
@@ -21,7 +21,7 @@ namespace Domain.Lessons
             Order = order;
         }
 
-        public static Lesson New(string title, string content, Guid courseId, int order)
+        public static Lesson New(string title, string content, CourseId courseId, int order)
         {
            
 

@@ -2,6 +2,7 @@ using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
 using Application.Courses.Exceptions;
 using Domain.Courses;
+using Domain.Users;
 using LanguageExt;
 using MediatR;
 using Unit = LanguageExt.Unit;
@@ -13,7 +14,7 @@ public record UpdateCourseCommand : IRequest<Either<CourseException, Course>>
     public required CourseId CourseId { get; init; }
     public required string Title { get; init; }
     public required string Description { get; init; }
-    public required Guid AuthorId { get; init; }
+    public required UserId AuthorId { get; init; }
 }
 
 public class UpdateCourseCommandHandler(

@@ -9,7 +9,7 @@ namespace Domain.Courses
         public CourseId Id { get; private set; }
         public string Title { get; private set; }
         public string Description { get; private set; }
-        public UserId AuthorId { get; private set; } // FK → User
+        public UserId AuthorId { get; private set; }
         public DateTime CreatedAt { get; private set; }
 
         public User Author { get; private set; }
