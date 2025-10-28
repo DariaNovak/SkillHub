@@ -1,6 +1,8 @@
 using Api.Dtos;
 using Application.Lessons.Queries;
+using Domain.Lessons;
 using FastEndpoints;
+using LanguageExt;
 using MediatR;
 
 namespace Api.Controllers.Lessons;
@@ -22,14 +24,15 @@ public class GetLessonByIdEndpoint : EndpointWithoutRequest<LessonDto>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var id = Route<Guid>("id");
+        var id = Route<LessonId>("id"); 
+
         var query = new GetLessonByIdQuery(id);
-        var lesson = await _mediator.Send(query, ct);
-        if (lesson is null)
-        {
-            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-            return;
-        }
-        Response = LessonDto.FromDomainModel(lesson);
+
+        var option = await _mediator.Send(query, ct);
+
+        await option.Match(
+            Some: async lesson => await Send.OkAsync(LessonDto.FromDomainModel(lesson), ct),
+            None: async () => await Send.NotFoundAsync(ct)
+        );
     }
 }

@@ -4,7 +4,7 @@ using Domain.Lessons;
 namespace Api.Dtos;
 
 public record LessonDto(
-    Guid Id,
+    LessonId Id,
     string Title,
     string Content,
     CourseId CourseId,
@@ -26,7 +26,7 @@ public record CreateLessonDto(
     int Order);
 
 public record UpdateLessonDto(
-    Guid Id,
+    LessonId Id,
     string Title,
     string Content, 
     int Order);

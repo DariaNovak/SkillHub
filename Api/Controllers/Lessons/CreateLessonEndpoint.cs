@@ -2,6 +2,7 @@ using Api.Dtos;
 using Application.Lessons.Commands;
 using FastEndpoints;
 using MediatR;
+using Domain.Lessons;
 
 namespace Api.Controllers.Lessons;
 
@@ -24,12 +25,28 @@ public class CreateLessonEndpoint : Endpoint<CreateLessonDto, LessonDto>
     {
         var command = new CreateLessonCommand
         {
+            Id = LessonId.New(), 
             Title = req.Title,
             Content = req.Content,
             CourseId = req.CourseId,
             Order = req.Order
         };
-        var lesson = await _mediator.Send(command, ct);
-        Response = LessonDto.FromDomainModel(lesson);
+
+        var result = await _mediator.Send(command, ct);
+
+        await result.Match(
+            Right: async lesson =>
+            {
+                var response = LessonDto.FromDomainModel(lesson);
+                await Send.CreatedAtAsync<GetLessonByIdEndpoint>(
+                    routeValues: new { id = lesson.Id.Value },
+                    responseBody: response,
+                    cancellation: ct
+                );
+            },
+            Left: async error =>
+            {
+                await Send.NoContentAsync();
+            });
     }
 }
