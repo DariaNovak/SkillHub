@@ -2,6 +2,7 @@ using Api.Dtos;
 using Application.Courses.Commands;
 using FastEndpoints;
 using MediatR;
+using LanguageExt;
 
 namespace Api.Controllers.Courses;
 
@@ -22,9 +23,13 @@ public class DeleteCourseEndpoint : Endpoint<DeleteCourseDto>
 
     public override async Task HandleAsync(DeleteCourseDto req, CancellationToken ct)
     {
-        var command = new DeleteCourseCommand(req.Id);
+        var command = new DeleteCourseCommand { CourseId = req.Id };
 
-        await _mediator.Send(command, ct);
-        HttpContext.Response.StatusCode = StatusCodes.Status204NoContent;
+        var result = await _mediator.Send(command, ct);
+
+        await result.Match(
+            Right: async _ => await Send.NoContentAsync(ct),
+            Left: async _ => await Send.NotFoundAsync(ct)
+        );
     }
 }

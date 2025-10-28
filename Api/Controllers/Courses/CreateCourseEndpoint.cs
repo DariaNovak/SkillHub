@@ -24,11 +24,27 @@ public class CreateCourseEndpoint : Endpoint<CreateCourseDto, CourseDto>
     {
         var command = new CreateCourseCommand
         {
+            Id = Domain.Courses.CourseId.New(),
             Title = req.Title,
             Description = req.Description,
             AuthorId = req.AuthorId
         };
-        var course = await _mediator.Send(command, ct);
-        Response = CourseDto.FromDomainModel(course);
+
+        var result = await _mediator.Send(command, ct);
+
+        await result.Match(
+            Right: async course =>
+            {
+                var response = CourseDto.FromDomainModel(course);
+                await Send.CreatedAtAsync<GetCourseByIdEndpoint>(
+                    routeValues: new { id = course.Id.Value },
+                    responseBody: response,
+                    cancellation: ct
+                );
+            },
+            Left: async error =>
+            {
+                await Send.NoContentAsync();
+            });
     }
 }

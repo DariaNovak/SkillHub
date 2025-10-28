@@ -14,7 +14,7 @@ namespace Application.Roles.Commands
     {
         public async Task<Role> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
         {
-            var role = Role.New(Guid.NewGuid(), request.Name);
+            var role = Role.New( request.Name);
             await roleRepository.AddAsync(role, cancellationToken);
             return role;
         }

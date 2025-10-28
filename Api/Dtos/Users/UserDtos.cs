@@ -3,7 +3,7 @@
 namespace Api.Dtos;
 
 public record UserDto(
-    Guid Id,
+    UserId Id,
     string Name,
     string Email,
     string PasswordHash,

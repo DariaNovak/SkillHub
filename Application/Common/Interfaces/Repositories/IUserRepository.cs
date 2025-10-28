@@ -1,4 +1,5 @@
 ﻿using Domain.Users;
+using LanguageExt;
 
 namespace Application.Common.Interfaces.Repositories
 {
@@ -6,6 +7,7 @@ namespace Application.Common.Interfaces.Repositories
     {
         Task<User> AddAsync(User entity, CancellationToken cancellationToken);
         Task UpdateAsync(User entity, CancellationToken cancellationToken);
-        Task DeleteAsync(Guid id, CancellationToken cancellationToken);
+        Task DeleteAsync(UserId id, CancellationToken cancellationToken);
+        
     }
 }

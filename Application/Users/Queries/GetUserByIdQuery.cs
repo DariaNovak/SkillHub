@@ -1,16 +1,21 @@
 ﻿using Application.Common.Interfaces.Queries;
 using Domain.Users;
+using LanguageExt;
 using MediatR;
 
 namespace Application.Users.Queries;
 
-public record GetUserByIdQuery(Guid UserId) : IRequest<User?>;
+public record GetUserByIdQuery(UserId Id) : IRequest<Option<User>>;
 
 public class GetUserByIdQueryHandler(
-    IUserQueries userRepository) : IRequestHandler<GetUserByIdQuery, User?>
+    IUserQueries userQueries) : IRequestHandler<GetUserByIdQuery, Option<User>>
 {
-    public async Task<User?> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Option<User>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
-        return await userRepository.GetByIdAsync(request.UserId, cancellationToken);
+        var option = await userQueries.GetByIdAsync(request.Id, cancellationToken);
+        return option.Match(
+            Some: user => user,
+            None: () => Option<User>.None
+        );
     }
 }

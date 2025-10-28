@@ -1,7 +1,7 @@
-﻿using FastEndpoints;
-using MediatR;
+﻿using Api.Dtos;
 using Application.Users.Commands;
-using Api.Dtos;
+using FastEndpoints;
+using MediatR;
 
 namespace Api.Controllers.Users;
 
@@ -16,14 +16,20 @@ public class DeleteUserEndpoint : Endpoint<DeleteUserDto>
 
     public override void Configure()
     {
-        Delete("/users/{UserId}");
+        Delete("/users/{id}");
         AllowAnonymous();
     }
 
     public override async Task HandleAsync(DeleteUserDto req, CancellationToken ct)
     {
-        var command = new DeleteUserCommand(req.Id);
-        await _mediator.Send(command, ct);
-        Response = StatusCodes.Status204NoContent;
+        var command = new DeleteUserCommand { UserId = req.Id };
+
+        var result = await _mediator.Send(command, ct);
+
+        
+        await result.Match(
+            Right: async user => Send.NoContentAsync(ct),  
+            Left: async user => Send.NotFoundAsync(ct)      
+        );
     }
 }

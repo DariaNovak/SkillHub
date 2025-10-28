@@ -1,10 +1,8 @@
 ﻿using Api.Dtos;
+using Api.Endpoints.Users;
 using Application.Users.Commands;
-using Domain.Roles.Role;
 using FastEndpoints;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
-using System.Xml.Linq;
 
 namespace Api.Controllers.Users;
 
@@ -33,7 +31,22 @@ public class CreateUserEndpoint : Endpoint<CreateUserDto, UserDto>
             RoleId = req.RoleId,
             JoinDate = req.JoinDate
         };
-        var user = await _mediator.Send(command, ct);
-        Response = UserDto.FromDomainModel(user);
+
+        var result = await _mediator.Send(command, ct);
+
+        await result.Match(
+            Right: async user =>
+            {
+                var response = UserDto.FromDomainModel(user);
+                await Send.CreatedAtAsync<GetUserByIdEndpoint>(
+                    routeValues: new { id = user.Id.Value },
+                    responseBody: response,
+                    cancellation: ct
+                );
+            },
+            Left: async error =>
+            {
+                await Send.NoContentAsync();
+            });
     }
 }

@@ -15,7 +15,7 @@ namespace Domain.Roles.Role
             Name = name;
         }
 
-        public static Role New(Guid id, string name)
+        public static Role New(string name)
         {
             return new Role(Guid.NewGuid(), name);
         }

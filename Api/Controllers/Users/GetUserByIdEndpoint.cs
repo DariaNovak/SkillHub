@@ -1,11 +1,12 @@
 ﻿using Api.Dtos;
 using Application.Users.Queries;
+using Domain.Users;
 using FastEndpoints;
 using MediatR;
 
 namespace Api.Endpoints.Users;
 
-public class GetUserByIdEndpoint : EndpointWithoutRequest<UserDto>
+public class GetUserByIdEndpoint : Endpoint<GetUserByIdDto, UserDto>
 {
     private readonly IMediator _mediator;
 
@@ -16,20 +17,17 @@ public class GetUserByIdEndpoint : EndpointWithoutRequest<UserDto>
 
     public override void Configure()
     {
-        Get("/users/{id}");
+        Get("/users/{Id:guid}");
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(GetUserByIdDto req, CancellationToken ct)
     {
-        var id = Route<Guid>("id");
-        var query = new GetUserByIdQuery(id);
-        var user = await _mediator.Send(query, ct);
-        if (user is null)
-        {
-            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-            return;
-        }
-        Response = UserDto.FromDomainModel(user);
+        var query = new GetUserByIdQuery(new UserId(req.Id));
+        var command = await _mediator.Send(query, ct);
+        await command.Match(
+            Some: async user => Send.OkAsync(UserDto.FromDomainModel(user)),
+            None: async () => Send.NotFoundAsync(ct)
+            );
     }
 }

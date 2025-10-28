@@ -1,10 +1,11 @@
 ﻿using Domain.Courses;
+using LanguageExt;
 
 namespace Application.Common.Interfaces.Queries
 {
     public interface ICourseQueries
     {
-        Task<Course?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
-        Task<IReadOnlyList<Course>> GetAllAsync(CancellationToken cancellationToken);
+        Task<Option<Course>> GetByIdAsync(CourseId id, CancellationToken cancellationToken);
+        Task<Option<IReadOnlyList<Course>>> GetAllAsync(CancellationToken cancellationToken);
     }
 }
