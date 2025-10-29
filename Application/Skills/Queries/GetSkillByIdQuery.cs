@@ -1,19 +1,21 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Application.Common.Interfaces.Queries;
+﻿using Application.Common.Interfaces.Queries;
 using Domain.Skills;
+using LanguageExt;
 using MediatR;
 
 namespace Application.Skills.Queries;
 
-public record GetSkillByIdQuery(Guid SkillId) : IRequest<Skill?>;
+public record GetSkillByIdQuery(SkillId Id) : IRequest<Option<Skill>>;
 
 public class GetSkillByIdQueryHandler(
-    ISkillQueries skillRepository) : IRequestHandler<GetSkillByIdQuery, Skill?>
+    ISkillQueries skillQueries) : IRequestHandler<GetSkillByIdQuery, Option<Skill>>
 {
-    public async Task<Skill?> Handle(GetSkillByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Option<Skill>> Handle(GetSkillByIdQuery request, CancellationToken cancellationToken)
     {
-        return await skillRepository.GetByIdAsync(request.SkillId, cancellationToken);
+        var option = await skillQueries.GetByIdAsync(request.Id, cancellationToken);
+        return option.Match(
+            Some: skill => skill,
+            None: () => Option<Skill>.None
+        );
     }
 }

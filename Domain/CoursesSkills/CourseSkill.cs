@@ -7,12 +7,12 @@ namespace Domain.CoursesSkills
     public class CourseSkill
     {
         public CourseId CourseId { get; private set; }
-        public Guid SkillId { get; private set; }
+        public SkillId SkillId { get; private set; }
 
         public Course Course { get; private set; }
         public Skill Skill { get; private set; }
 
-        private CourseSkill(CourseId courseId, Guid skillId)
+        private CourseSkill(CourseId courseId, SkillId skillId)
         {
             CourseId = courseId;
             SkillId = skillId;

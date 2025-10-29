@@ -3,7 +3,7 @@
 namespace Api.Dtos;
 
 public record SkillDto(
-    Guid Id,
+    SkillId Id,
     string Name)
 {
     public static SkillDto FromDomainModel(Skill skill)

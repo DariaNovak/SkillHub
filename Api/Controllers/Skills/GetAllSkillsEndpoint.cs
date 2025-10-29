@@ -24,6 +24,14 @@ public class GetAllSkillsEndpoint : EndpointWithoutRequest<List<SkillDto>>
     {
         var query = new GetAllSkillsQuery();
         var skills = await _mediator.Send(query, ct);
-        Response = skills.Select(SkillDto.FromDomainModel).ToList();
+
+        if (skills == null || !skills.Any())
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+
+        var dtos = skills.Select(SkillDto.FromDomainModel).ToList();
+        await Send.OkAsync(dtos, ct);
     }
 }

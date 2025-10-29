@@ -1,4 +1,5 @@
 ﻿using Domain.CoursesSkills;
+using Domain.Roles;
 using Domain.Skills;
 using Domain.UsersSkills;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,8 @@ namespace Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<Skill> builder)
         {
             builder.HasKey(x => x.Id);
+
+            builder.Property(x => x.Id).HasConversion(x => x.Value, x => new SkillId(x));
 
             builder.Property(x => x.Name)
                 .HasColumnType("varchar(255)")

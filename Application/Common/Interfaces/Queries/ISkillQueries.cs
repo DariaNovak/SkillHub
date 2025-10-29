@@ -1,10 +1,11 @@
 ﻿using Domain.Skills;
+using LanguageExt;
 
 namespace Application.Common.Interfaces.Queries
 {
     public interface ISkillQueries
     {
-        Task<Skill?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
-        Task<IReadOnlyList<Skill>> GetAllAsync(CancellationToken cancellationToken);
+        Task<Option<Skill>> GetByIdAsync(SkillId id, CancellationToken cancellationToken);
+        Task<Option<IReadOnlyList<Skill>>> GetAllAsync(CancellationToken cancellationToken);
     }
 }

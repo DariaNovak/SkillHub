@@ -5,13 +5,13 @@ namespace Domain.Skills
 {
     public class Skill
     {
-        public Guid Id { get; private set; }
+        public SkillId Id { get; private set; }
         public string Name { get; private set; }
 
         public ICollection<UserSkill> UserSkills { get; private set; }
         public ICollection<CourseSkill> CourseSkills { get; private set; }
 
-        private Skill(Guid id, string name)
+        private Skill(SkillId id, string name)
         {
             Id = id;
             Name = name;
@@ -20,7 +20,7 @@ namespace Domain.Skills
 
         public static Skill New(string name)
         {
-            return new Skill(Guid.NewGuid(), name);
+            return new Skill(SkillId.New(), name);
         }
 
         public void UpdateInfo(string name)

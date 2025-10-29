@@ -1,5 +1,6 @@
 using Api.Dtos;
 using Application.Skills.Commands;
+using Domain.Skills;
 using FastEndpoints;
 using MediatR;
 
@@ -22,11 +23,27 @@ public class CreateSkillEndpoint : Endpoint<CreateSkillDto, SkillDto>
 
     public override async Task HandleAsync(CreateSkillDto req, CancellationToken ct)
     {
-        var command = new CreateSkillsCommand
+        var command = new CreateSkillCommand
         {
+            Id = SkillId.New(),
             Name = req.Name
         };
-        var skill = await _mediator.Send(command, ct);
-        Response = SkillDto.FromDomainModel(skill);
+
+        var result = await _mediator.Send(command, ct);
+
+        await result.Match(
+            Right: async skill =>
+            {
+                var response = SkillDto.FromDomainModel(skill);
+                await Send.CreatedAtAsync<GetSkillByIdEndpoint>(
+                    routeValues: new { id = skill.Id.Value },
+                    responseBody: response,
+                    cancellation: ct
+                );
+            },
+            Left: async error =>
+            {
+                await Send.NoContentAsync();
+            });
     }
 }
