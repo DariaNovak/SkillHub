@@ -27,19 +27,16 @@ namespace Tests.Api
 
         public async Task InitializeAsync()
         {
-            // 1. Створюємо тестову роль
             _testRole = Role.New("user");
             await Context.Roles.AddAsync(_testRole);
             await SaveChangesAsync();
 
-            // 2. Створюємо авторів курсів
             _firstAuthor = UserData.FirstUser(_testRole.Id);
             _secondAuthor = UserData.SecondUser(_testRole.Id);
             await Context.Users.AddAsync(_firstAuthor);
             await Context.Users.AddAsync(_secondAuthor);
             await SaveChangesAsync();
 
-            // 3. Створюємо курси з існуючими авторами
             _firstTestCourse = CourseData.FirstCourse(_firstAuthor.Id);
             _secondTestCourse = CourseData.SecondCourse(_secondAuthor.Id);
             await Context.Courses.AddAsync(_firstTestCourse);
@@ -96,26 +93,21 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldCreateCourse()
         {
-            // 1. Створюємо автора, який реально існує у БД
             var newAuthor = UserData.ThirdUser(_testRole.Id);
             await Context.Users.AddAsync(newAuthor);
             await SaveChangesAsync();
 
-            // 2. Створюємо DTO для POST (без ID, бо сервер генерує його)
             var request = new CreateCourseDto(
                 Title: "New Test Course",
                 Description: "Course Description",
                 AuthorId: newAuthor.Id
             );
 
-            // 3. Виконуємо POST
             var response = await Client.PostAsJsonAsync(BaseRoute, request);
 
-            // 4. Перевірка HTTP статусу
             response.IsSuccessStatusCode.Should().BeTrue();
             response.StatusCode.Should().Be(HttpStatusCode.Created);
 
-            // 5. Десеріалізуємо відповідь
             var courseDto = await response.ToResponseModel<CourseDto>();
             courseDto.Should().NotBeNull();
             courseDto!.Title.Should().Be(request.Title);
@@ -123,7 +115,6 @@ namespace Tests.Api
             courseDto.AuthorId.Should().Be(request.AuthorId);
             courseDto.Id.Should().NotBeNull();
 
-            // 6. Перевірка у базі даних - використовуємо ID з відповіді!
             var dbCourse = await Context.Courses
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == courseDto.Id);

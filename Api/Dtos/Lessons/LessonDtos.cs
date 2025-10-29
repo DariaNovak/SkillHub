@@ -26,7 +26,7 @@ public record CreateLessonDto(
     int Order);
 
 public record UpdateLessonDto(
-    LessonId Id,
+    Guid Id,
     string Title,
     string Content, 
     int Order);

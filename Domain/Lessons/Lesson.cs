@@ -4,13 +4,13 @@ namespace Domain.Lessons
 {
     public class Lesson
     {
-        public LessonId Id { get; private set; }
-        public string Title { get; private set; }
-        public string Content { get; private set; }
-        public CourseId CourseId { get; private set; } // FK → Course
-        public int Order { get; private set; }
+        public LessonId Id { get; set; }
+        public string Title { get;  set; }
+        public string Content { get; set; }
+        public CourseId CourseId { get;  set; }
+        public int Order { get;  set; }
 
-        public Course Course { get; private set; }
+        public Course Course { get;  set; }
 
         private Lesson(LessonId id, string title, string content, CourseId courseId, int order)
         {

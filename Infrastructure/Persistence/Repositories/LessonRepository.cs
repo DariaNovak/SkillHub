@@ -25,13 +25,14 @@ public class LessonRepository : ILessonRepository, ILessonQueries
         return entity;
     }
 
+
     public async Task<Option<IReadOnlyList<Lesson>>> GetAllAsync(CancellationToken cancellationToken)
     {
         var lessons = await _context.Lessons
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
-        return lessons.Any() ? Option<IReadOnlyList<Lesson>>.Some(lessons) : Option<IReadOnlyList<Lesson>>.None;
+        return lessons ?? Option<IReadOnlyList<Lesson>>.None;
     }
 
     public async Task<Option<Lesson?>> GetByIdAsync(LessonId id, CancellationToken cancellationToken)
@@ -40,7 +41,7 @@ public class LessonRepository : ILessonRepository, ILessonQueries
             .AsNoTracking()
             .FirstOrDefaultAsync(l => l.Id == id, cancellationToken);
 
-        return lesson is not null ? Option<Lesson>.Some(lesson) : Option<Lesson>.None;
+        return lesson ?? Option<Lesson?>.None;
     }
 
     public async Task UpdateAsync(Lesson entity, CancellationToken cancellationToken)

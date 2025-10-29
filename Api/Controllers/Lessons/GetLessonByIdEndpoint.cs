@@ -1,5 +1,6 @@
 using Api.Dtos;
 using Application.Lessons.Queries;
+using Domain.Courses;
 using Domain.Lessons;
 using FastEndpoints;
 using LanguageExt;
@@ -24,9 +25,10 @@ public class GetLessonByIdEndpoint : EndpointWithoutRequest<LessonDto>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var id = Route<LessonId>("id"); 
+        var idGuid = Route<Guid>("id");
+        var lessonId = new LessonId(idGuid);
 
-        var query = new GetLessonByIdQuery(id);
+        var query = new GetLessonByIdQuery(lessonId);
 
         var option = await _mediator.Send(query, ct);
 
