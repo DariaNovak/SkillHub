@@ -1,6 +1,7 @@
 ﻿using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
 using Application.Users.Exceptions;
+using Domain.Roles;
 using Domain.Users;
 using LanguageExt;
 using MediatR;
@@ -12,7 +13,7 @@ public record CreateUserCommand : IRequest<Either<UserException, User>>
     public required string Name { get; init; }
     public required string Email { get; init; }
     public required string PasswordHash { get; init; }
-    public required Guid RoleId { get; init; }
+    public required RoleId RoleId { get; init; }
     public required DateTime JoinDate { get; init; }
 }
 

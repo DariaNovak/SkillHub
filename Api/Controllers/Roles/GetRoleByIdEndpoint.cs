@@ -1,6 +1,8 @@
 using Api.Dtos;
 using Application.Roles.Queries;
+using Domain.Roles;
 using FastEndpoints;
+using LanguageExt;
 using MediatR;
 
 namespace Api.Controllers.Roles;
@@ -22,14 +24,16 @@ public class GetRoleByIdEndpoint : EndpointWithoutRequest<RoleDto>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var id = Route<Guid>("id");
-        var query = new GetRoleByIdQuery(id);
-        var role = await _mediator.Send(query, ct);
-        if (role is null)
-        {
-            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-            return;
-        }
-        Response = RoleDto.FromDomainModel(role);
+        var idGuid = Route<Guid>("id");
+        var roleId = new RoleId(idGuid);
+
+        var query = new GetRoleByIdQuery(roleId);
+
+        var option = await _mediator.Send(query, ct);
+
+        await option.Match(
+            Some: async role => await Send.OkAsync(RoleDto.FromDomainModel(role), ct),
+            None: async () => await Send.NotFoundAsync(ct)
+        );
     }
 }

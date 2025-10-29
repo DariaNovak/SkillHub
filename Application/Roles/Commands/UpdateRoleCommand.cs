@@ -1,35 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application.Common.Interfaces.Queries;
+﻿using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
+using Application.Roles.Exceptions;
+using Domain.Roles;
 using Domain.Roles.Role;
+using LanguageExt;
 using MediatR;
 
 namespace Application.Roles.Commands;
 
-public record UpdateRoleCommand(
-    Guid Id,
-    string Name
- ) : IRequest;
-
+public record UpdateRoleCommand : IRequest<Either<RoleException, Role>>
+{
+    public required RoleId RoleId { get; init; }
+    public required string Name { get; init; }
+}
 
 public class UpdateRoleCommandHandler(
     IRoleQueries roleQueries,
-    IRoleRepository roleRepository) : IRequestHandler<UpdateRoleCommand>
+    IRoleRepository roleRepository)
+    : IRequestHandler<UpdateRoleCommand, Either<RoleException, Role>>
 {
-    public async Task Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
+    public async Task<Either<RoleException, Role>> Handle(
+        UpdateRoleCommand request,
+        CancellationToken cancellationToken)
     {
-        var role = await roleQueries.GetByIdAsync(request.Id, cancellationToken);
+        var role = await roleQueries.GetByIdAsync(request.RoleId, cancellationToken);
 
-        if (role is null)
-            throw new KeyNotFoundException("Role not found.");
+        return await role.MatchAsync(
+            r => UpdateEntity(request, r, cancellationToken),
+            () => new RoleNotFoundException(request.RoleId));
+    }
 
-        role.UpdateInfo(request.Name);
-
-        await roleRepository.UpdateAsync(role, cancellationToken);
-
+    private async Task<Either<RoleException, Role>> UpdateEntity(
+        UpdateRoleCommand request,
+        Role role,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            role.UpdateInfo(request.Name);
+            await roleRepository.UpdateAsync(role, cancellationToken);
+            return role;
+        }
+        catch (Exception exception)
+        {
+            return new UnhandledRoleException(role.Id, exception);
+        }
     }
 }

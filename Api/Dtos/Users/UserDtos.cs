@@ -1,4 +1,5 @@
-﻿using Domain.Users;
+﻿using Domain.Roles;
+using Domain.Users;
 
 namespace Api.Dtos;
 
@@ -7,7 +8,7 @@ public record UserDto(
     string Name,
     string Email,
     string PasswordHash,
-    Guid RoleId,
+    RoleId RoleId,
     DateTime JoinDate)
 {
     public static UserDto FromDomainModel(User user)

@@ -4,12 +4,12 @@ namespace Domain.Roles.Role
 {
     public class Role
     {
-        public Guid Id { get; private set; } 
+        public RoleId Id { get; private set; } 
         public string Name { get; private set; }
 
         public ICollection<User> Users { get; set; }
 
-        private Role(Guid id, string name)
+        private Role(RoleId id, string name)
         {
             Id = id;
             Name = name;
@@ -17,7 +17,7 @@ namespace Domain.Roles.Role
 
         public static Role New(string name)
         {
-            return new Role(Guid.NewGuid(), name);
+            return new Role(RoleId.New(), name);
         }
 
         public void UpdateInfo(string name)

@@ -1,22 +1,51 @@
-﻿using Application.Common.Interfaces.Repositories;
+﻿using Application.Common.Interfaces.Queries;
+using Application.Common.Interfaces.Repositories;
+using Application.Roles.Exceptions;
+using Domain.Roles;
 using Domain.Roles.Role;
+using LanguageExt;
 using MediatR;
 
 namespace Application.Roles.Commands
 {
-    public record CreateRoleCommand : IRequest<Role>
+    public record CreateRoleCommand : IRequest<Either<RoleException, Role>>
     {
+        public required RoleId Id { get; init; }
         public required string Name { get; init; }
     }
 
     public class CreateRoleCommandHandler(
-        IRoleRepository roleRepository) : IRequestHandler<CreateRoleCommand, Role>
+        IRoleQueries roleQueries,
+        IRoleRepository roleRepository)
+        : IRequestHandler<CreateRoleCommand, Either<RoleException, Role>>
     {
-        public async Task<Role> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
+        public async Task<Either<RoleException, Role>> Handle(
+            CreateRoleCommand request,
+            CancellationToken cancellationToken)
         {
-            var role = Role.New( request.Name);
-            await roleRepository.AddAsync(role, cancellationToken);
-            return role;
+            var existingRole = await roleQueries.GetByIdAsync(request.Id, cancellationToken);
+
+            return await existingRole.MatchAsync(
+                r => new RoleAlreadyExistsException(r.Id),
+                () => CreateEntity(request, cancellationToken));
+        }
+
+        private async Task<Either<RoleException, Role>> CreateEntity(
+            CreateRoleCommand request,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                var role = await roleRepository.AddAsync(
+                    Role.New(request.Name),
+                    cancellationToken);
+
+                return role;
+            }
+            catch (Exception exception)
+            {
+                return new UnhandledRoleException(request.Id, exception);
+            }
         }
     }
 }

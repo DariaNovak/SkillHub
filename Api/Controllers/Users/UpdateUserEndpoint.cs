@@ -1,6 +1,7 @@
 ﻿using Api.Dtos;
 using Application.Users.Commands;
 using Application.Users.Exceptions;
+using Domain.Roles;
 using FastEndpoints;
 using MediatR;
 
@@ -29,21 +30,21 @@ public class UpdateUserEndpoint : Endpoint<UpdateUserDto, UserDto>
             Name = req.Name,
             Email = req.Email,
             PasswordHash = req.PasswordHash,
-            RoleId = req.RoleId,
+            RoleId = new RoleId(req.RoleId),
             JoinDate = req.JoinDate
         };
 
         var result = await _mediator.Send(command, ct);
 
         result.Match(
-           Right: user => Send.OkAsync(UserDto.FromDomainModel(user)),     // 200 OK
+           Right: user => Send.OkAsync(UserDto.FromDomainModel(user)),     
             Left: ex =>
             {
                 switch (ex)
                 {
-                    case UserNotFoundException: Send.NotFoundAsync(); break; // 404
-                    case UserAlreadyExistException: Send.ErrorsAsync(); break; // 409
-                    default: Send.NotFoundAsync(); break;          // 400
+                    case UserNotFoundException: Send.NotFoundAsync(); break; 
+                    case UserAlreadyExistException: Send.ErrorsAsync(); break; 
+                    default: Send.NotFoundAsync(); break;         
                 }
             }
         );

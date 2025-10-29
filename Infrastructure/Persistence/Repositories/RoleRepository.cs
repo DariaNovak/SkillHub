@@ -1,43 +1,63 @@
 ﻿using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
+using Application.Common.Settings;
+using Domain.Roles;
 using Domain.Roles.Role;
+using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class RoleRepository(ApplicationDbContext context) : IRoleRepository, IRoleQueries
+public class RoleRepository : IRoleRepository, IRoleQueries
 {
+    private readonly ApplicationDbContext _context;
+
+    public RoleRepository(ApplicationDbContext context, ApplicationSettings settings)
+    {
+        var connectionString = settings.ConnectionStrings.DefaultConnection;
+        _context = context;
+    }
+
     public async Task<Role> AddAsync(Role entity, CancellationToken cancellationToken)
     {
-        await context.Roles.AddAsync(entity, cancellationToken);
-        await context.SaveChangesAsync(cancellationToken);
+        await _context.Roles.AddAsync(entity, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
 
         return entity;
     }
 
-    public async Task<IReadOnlyList<Role>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<Option<IReadOnlyList<Role>>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return await context.Roles.ToListAsync(cancellationToken);
+        var roles = await _context.Roles
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        return roles ?? Option<IReadOnlyList<Role>>.None;
     }
 
-    public async Task<Role?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<Option<Role?>> GetByIdAsync(RoleId id, CancellationToken cancellationToken)
     {
-        return await context.Roles.FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
+        var role = await _context.Roles
+            .AsNoTracking()
+            .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
+
+        return role ?? Option<Role?>.None;
     }
 
     public async Task UpdateAsync(Role entity, CancellationToken cancellationToken)
     {
-        context.Roles.Update(entity);
-        await context.SaveChangesAsync(cancellationToken);
+        _context.Roles.Update(entity);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        var role = await context.Roles.FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
+        var role = await _context.Roles.FindAsync(id, cancellationToken);
+
         if (role is not null)
         {
-            context.Roles.Remove(role);
-            await context.SaveChangesAsync(cancellationToken);
+            _context.Roles.Remove(role);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Api.Dtos;
 using Application.Users.Commands;
+using Domain.Roles;
 using Domain.Roles.Role;
 using Domain.Users;
 using FluentAssertions;
@@ -94,14 +95,13 @@ namespace Tests.Api
             var roleExists = await Context.Roles.AnyAsync(r => r.Id == existingRole.Id);
             roleExists.Should().BeTrue("role must exist in DB before creating user");
 
-            var request = new CreateUserCommand
-            {
-                Name = "New Test User",
-                Email = "new.user@example.com",
-                PasswordHash = "Secure123!",
-                RoleId = existingRole.Id,
-                JoinDate = DateTime.UtcNow
-            };
+            var request = new CreateUserDto(
+                Name: "New Test User",
+                Email: "new.user@example.com",
+                PasswordHash: "Secure123!",
+                RoleId: existingRole.Id.Value,
+                JoinDate: DateTime.UtcNow
+            );
 
             var response = await Client.PostAsJsonAsync(BaseRoute, request);
 
@@ -114,7 +114,6 @@ namespace Tests.Api
 
             var dbUser = await Context.Users
                 .FirstOrDefaultAsync(u => u.Id == new UserId(userDto.Id.Value));
-
 
             dbUser.Should().NotBeNull();
             dbUser!.Name.Should().Be(request.Name);
@@ -130,7 +129,7 @@ namespace Tests.Api
                 Name = "Invalid User",
                 Email = "",
                 PasswordHash = "123",
-                RoleId = Guid.NewGuid(),
+                RoleId = new RoleId(Guid.NewGuid()),
                 JoinDate = DateTime.UtcNow
             };
 
@@ -156,15 +155,14 @@ namespace Tests.Api
             var roleExists = await Context.Roles.AnyAsync(r => r.Id == existingRole.Id);
             roleExists.Should().BeTrue("role must exist in DB before creating user");
 
-            var request = new UpdateUserCommand
-            {
-                UserId = _firstTestUser.Id.Value,
-                Name = "Updated Name",
-                Email = "updated.email@example.com",
-                PasswordHash = "UpdatedPass123!",
-                RoleId = existingRole.Id,
-                JoinDate = DateTime.UtcNow
-            };
+            var request = new UpdateUserDto(
+                Id: _firstTestUser.Id.Value,
+                Name: "Updated Name",
+                Email: "updated.email@example.com",
+                PasswordHash: "UpdatedPass123!",
+                RoleId: existingRole.Id.Value,
+                JoinDate: DateTime.UtcNow
+            );
 
             var response = await Client.PutAsJsonAsync($"{BaseRoute}/{_firstTestUser.Id.Value}", request);
             response.IsSuccessStatusCode.Should().BeTrue();
@@ -182,20 +180,18 @@ namespace Tests.Api
         public async Task ShouldReturnNotFoundWhenUpdatingNonExistentUser()
         {
             var nonExistentId = Guid.NewGuid();
-            var request = new UpdateUserCommand
-            {
-                UserId = nonExistentId,
-                Name = "Nonexistent",
-                Email = "none@example.com",
-                PasswordHash = "123456",
-                RoleId = Guid.NewGuid(),
-                JoinDate = DateTime.UtcNow
-            };
+            var request = new UpdateUserDto(
+                Id: nonExistentId,
+                Name: "Nonexistent",
+                Email: "none@example.com",
+                PasswordHash: "123456",
+                RoleId: Guid.NewGuid(),
+                JoinDate: DateTime.UtcNow
+            );
 
             var response = await Client.PutAsJsonAsync($"{BaseRoute}/{nonExistentId}", request);
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
-
         #endregion
 
         #region DELETE Tests

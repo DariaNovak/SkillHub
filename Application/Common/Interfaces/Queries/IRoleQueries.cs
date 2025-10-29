@@ -1,10 +1,12 @@
-﻿using Domain.Roles.Role;
+﻿using Domain.Roles;
+using Domain.Roles.Role;
+using LanguageExt;
 
 namespace Application.Common.Interfaces.Queries
 {
     public interface IRoleQueries
     {
-        Task<Role?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
-        Task<IReadOnlyList<Role>> GetAllAsync(CancellationToken cancellationToken);
+        Task<Option<Role?>> GetByIdAsync(RoleId id, CancellationToken cancellationToken);
+        Task<Option<IReadOnlyList<Role>>> GetAllAsync(CancellationToken cancellationToken);
     }
 }

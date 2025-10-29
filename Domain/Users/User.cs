@@ -1,4 +1,5 @@
-﻿using Domain.Roles.Role;
+﻿using Domain.Roles;
+using Domain.Roles.Role;
 using Domain.UsersSkills;
 
 namespace Domain.Users
@@ -9,7 +10,7 @@ namespace Domain.Users
         public string Name { get; set; }
         public string Email { get; set; }
         public string PasswordHash { get; private set; }
-        public Guid RoleId { get; set; }
+        public RoleId RoleId { get; set; }
         public Role Role { get; set; }
         public DateTime JoinDate { get; private set; }
 
@@ -21,7 +22,7 @@ namespace Domain.Users
             string name,
             string email,
             string passwordHash,
-            Guid roleId,
+            RoleId roleId,
             DateTime joinDate)
         {
             Id = id;
@@ -35,7 +36,7 @@ namespace Domain.Users
             string name,
             string email,
             string passwordHash,
-            Guid roleId,
+            RoleId roleId,
             DateTime joinDate)
         {
             return new User(
@@ -50,7 +51,7 @@ namespace Domain.Users
         public void UpdateInfo(string name,
             string email,
             string passwordHash,
-            Guid roleId,
+            RoleId roleId,
             DateTime joinDate)
         {
             Name = name;

@@ -1,6 +1,7 @@
 ﻿using Api.Dtos;
 using Api.Endpoints.Users;
 using Application.Users.Commands;
+using Domain.Roles;
 using FastEndpoints;
 using MediatR;
 
@@ -28,7 +29,7 @@ public class CreateUserEndpoint : Endpoint<CreateUserDto, UserDto>
             Name = req.Name,
             Email = req.Email,
             PasswordHash = req.PasswordHash,
-            RoleId = req.RoleId,
+            RoleId = new RoleId(req.RoleId),
             JoinDate = req.JoinDate
         };
 

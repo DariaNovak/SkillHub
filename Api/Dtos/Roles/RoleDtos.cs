@@ -1,9 +1,10 @@
+using Domain.Roles;
 using Domain.Roles.Role;
 
 namespace Api.Dtos;
 
 public record RoleDto(
-    Guid Id,
+    RoleId Id,
     string Name)
 {
     public static RoleDto FromDomainModel(Role role)
