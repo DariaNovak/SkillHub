@@ -50,9 +50,11 @@ public class RoleRepository : IRoleRepository, IRoleQueries
         await _context.SaveChangesAsync(cancellationToken);
     }
 
+
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        var role = await _context.Roles.FindAsync(id, cancellationToken);
+        var roleId = new RoleId(id);
+        var role = await _context.Roles.FirstOrDefaultAsync(r => r.Id == roleId, cancellationToken);
 
         if (role is not null)
         {
