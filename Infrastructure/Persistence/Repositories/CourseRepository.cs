@@ -32,16 +32,20 @@ public class CourseRepository : ICourseRepository, ICourseQueries
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
-        return courses ?? Option<IReadOnlyList<Course>>.None;
+        return courses.Count > 0
+            ? Option<IReadOnlyList<Course>>.Some(courses)
+            : Option<IReadOnlyList<Course>>.None;
     }
 
-    public async Task<Option<Course?>> GetByIdAsync(CourseId id, CancellationToken cancellationToken)
+    public async Task<Option<Course>> GetByIdAsync(CourseId id, CancellationToken cancellationToken)
     {
         var course = await _context.Courses
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
 
-        return course ?? Option<Course>.None;
+        return course is not null
+            ? Option<Course>.Some(course)
+            : Option<Course>.None;
     }
 
     public async Task UpdateAsync(Course entity, CancellationToken cancellationToken)

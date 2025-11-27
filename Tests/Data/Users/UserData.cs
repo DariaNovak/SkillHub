@@ -1,10 +1,11 @@
-﻿using Domain.Users;
+﻿using Domain.Roles;
+using Domain.Users;
 
 namespace Tests.Data.Users
 {
     public static class UserData
     {
-        public static User FirstUser(Guid roleId) =>
+        public static User FirstUser(RoleId roleId) =>
             User.New(
                 "Alice Johnson",
                 "alice.johnson@example.com",
@@ -13,7 +14,7 @@ namespace Tests.Data.Users
                 DateTime.Now
             );
 
-        public static User SecondUser(Guid roleId) =>
+        public static User SecondUser(RoleId roleId) =>
             User.New(
                 "Bob Smith",
                 "bob.smith@example.com",
@@ -22,7 +23,7 @@ namespace Tests.Data.Users
                 DateTime.Now
             );
 
-        public static User ThirdUser(Guid roleId) =>
+        public static User ThirdUser(RoleId roleId) =>
             User.New(
                 "Charlie Brown",
                 "charlie.brown@example.com",
@@ -35,7 +36,7 @@ namespace Tests.Data.Users
             string name,
             string email,
             string passwordHash,
-            Guid roleId)
+            RoleId roleId)
             => User.New(
                 name,
                 email,

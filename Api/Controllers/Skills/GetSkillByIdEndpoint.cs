@@ -1,6 +1,8 @@
 using Api.Dtos;
 using Application.Skills.Queries;
+using Domain.Skills;
 using FastEndpoints;
+using LanguageExt;
 using MediatR;
 
 namespace Api.Controllers.Skills;
@@ -22,14 +24,16 @@ public class GetSkillByIdEndpoint : EndpointWithoutRequest<SkillDto>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var id = Route<Guid>("id");
-        var query = new GetSkillByIdQuery(id);
-        var skill = await _mediator.Send(query, ct);
-        if (skill is null)
-        {
-            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-            return;
-        }
-        Response = SkillDto.FromDomainModel(skill);
+        var idGuid = Route<Guid>("id");
+        var skillId = new SkillId(idGuid);
+
+        var query = new GetSkillByIdQuery(skillId);
+
+        var option = await _mediator.Send(query, ct);
+
+        await option.Match(
+            Some: async skill => await Send.OkAsync(SkillDto.FromDomainModel(skill), ct),
+            None: async () => await Send.NotFoundAsync(ct)
+        );
     }
 }

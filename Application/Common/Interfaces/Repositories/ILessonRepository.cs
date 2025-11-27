@@ -6,6 +6,6 @@ namespace Application.Common.Interfaces.Repositories
     {
         Task<Lesson> AddAsync(Lesson entity, CancellationToken cancellationToken);
         Task UpdateAsync(Lesson entity, CancellationToken cancellationToken);
-        Task DeleteAsync(Guid id, CancellationToken cancellationToken);
+        Task DeleteAsync(LessonId id, CancellationToken cancellationToken);
     }
 }

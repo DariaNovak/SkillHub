@@ -1,5 +1,6 @@
 using Api.Dtos;
 using Application.Courses.Commands;
+using Domain.Courses;
 using FastEndpoints;
 using MediatR;
 
@@ -24,7 +25,7 @@ public class CreateCourseEndpoint : Endpoint<CreateCourseDto, CourseDto>
     {
         var command = new CreateCourseCommand
         {
-            Id = Domain.Courses.CourseId.New(),
+            Id = CourseId.New(),
             Title = req.Title,
             Description = req.Description,
             AuthorId = req.AuthorId
@@ -44,7 +45,7 @@ public class CreateCourseEndpoint : Endpoint<CreateCourseDto, CourseDto>
             },
             Left: async error =>
             {
-                await Send.NoContentAsync();
+                await Send.NotFoundAsync(ct);
             });
     }
 }

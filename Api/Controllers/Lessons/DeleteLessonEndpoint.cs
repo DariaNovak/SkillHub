@@ -2,6 +2,8 @@ using Api.Dtos;
 using Application.Lessons.Commands;
 using FastEndpoints;
 using MediatR;
+using LanguageExt;
+using Unit = LanguageExt.Unit;
 
 namespace Api.Controllers.Lessons;
 
@@ -22,9 +24,13 @@ public class DeleteLessonEndpoint : Endpoint<DeleteLessonDto>
 
     public override async Task HandleAsync(DeleteLessonDto req, CancellationToken ct)
     {
-        var command = new DeleteLessonCommand(req.Id);
+        var command = new DeleteLessonCommand { LessonId = req.Id };
 
-        await _mediator.Send(command, ct);
-        HttpContext.Response.StatusCode = StatusCodes.Status204NoContent;
+        var result = await _mediator.Send(command, ct);
+
+        await result.Match(
+            Right: async _ => await Send.NoContentAsync(ct),
+            Left: async _ => await Send.NotFoundAsync(ct)
+        );
     }
 }

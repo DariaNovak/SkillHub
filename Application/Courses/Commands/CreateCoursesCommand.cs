@@ -28,7 +28,7 @@ public class CreateCourseCommandHandler(
         var existingCourse = await courseQueries.GetByIdAsync(request.Id, cancellationToken);
 
         return await existingCourse.MatchAsync(
-            c => new CourseAlreadyExistsException(request.Id),
+            c => new CourseAlreadyExistsException(request.Id.Value),
             () => CreateEntity(request, cancellationToken));
     }
 
@@ -39,14 +39,14 @@ public class CreateCourseCommandHandler(
         try
         {
             var course = await courseRepository.AddAsync(
-                Course.New(request.Title, request.Description, request.AuthorId),
+                Course.New(request.Id, request.Title, request.Description, request.AuthorId),
                 cancellationToken);
 
             return course;
         }
         catch (Exception exception)
         {
-            return new UnhandledCourseException(request.Id, exception);
+            return new UnhandledCourseException(request.Id.Value, exception);
         }
     }
 }

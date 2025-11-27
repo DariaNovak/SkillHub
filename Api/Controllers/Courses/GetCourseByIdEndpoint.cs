@@ -2,9 +2,7 @@ using Api.Dtos;
 using Application.Courses.Queries;
 using Domain.Courses;
 using FastEndpoints;
-using LanguageExt;
 using MediatR;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Api.Controllers.Courses;
 
@@ -25,15 +23,16 @@ public class GetCourseByIdEndpoint : EndpointWithoutRequest<CourseDto>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var id = Route<CourseId>("id");
+        var idGuid = Route<Guid>("id");
+        var courseId = new CourseId(idGuid);
 
-        var query = new GetCourseByIdQuery(id);
+        var query = new GetCourseByIdQuery(courseId);
 
-        var command = await _mediator.Send(query, ct);
+        var result = await _mediator.Send(query, ct);
 
-        await command.Match(
-            Some: async course => Send.OkAsync(CourseDto.FromDomainModel(course)),
-            None: async () => Send.NotFoundAsync(ct)
-            );
+        await result.Match(
+            Some: async course => await Send.OkAsync(CourseDto.FromDomainModel(course), ct),
+            None: async () => await Send.NotFoundAsync(ct)
+        );
     }
 }

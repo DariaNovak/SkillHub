@@ -1,5 +1,6 @@
 using Api.Dtos;
 using Application.Roles.Commands;
+using Domain.Roles;
 using FastEndpoints;
 using MediatR;
 
@@ -24,9 +25,25 @@ public class CreateRoleEndpoint : Endpoint<CreateRoleDto, RoleDto>
     {
         var command = new CreateRoleCommand
         {
+            Id = RoleId.New(),
             Name = req.Name
         };
-        var role = await _mediator.Send(command, ct);
-        Response = RoleDto.FromDomainModel(role);
+
+        var result = await _mediator.Send(command, ct);
+
+        await result.Match(
+            Right: async role =>
+            {
+                var response = RoleDto.FromDomainModel(role);
+                await Send.CreatedAtAsync<GetRoleByIdEndpoint>(
+                    routeValues: new { id = role.Id.Value },
+                    responseBody: response,
+                    cancellation: ct
+                );
+            },
+            Left: async error =>
+            {
+                await Send.NoContentAsync();
+            });
     }
 }

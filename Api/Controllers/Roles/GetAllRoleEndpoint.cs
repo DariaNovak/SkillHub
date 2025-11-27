@@ -22,7 +22,16 @@ public class GetAllRoleEndpoint : EndpointWithoutRequest<List<RoleDto>>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var roles = await _mediator.Send(new GetAllRoleQuery(), ct);
-        Response = roles.Select(RoleDto.FromDomainModel).ToList(); ;
+        var query = new GetAllRoleQuery();
+        var roles = await _mediator.Send(query, ct);
+
+        if (roles == null || !roles.Any())
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+
+        var dtos = roles.Select(RoleDto.FromDomainModel).ToList();
+        await Send.OkAsync(dtos, ct);
     }
 }
