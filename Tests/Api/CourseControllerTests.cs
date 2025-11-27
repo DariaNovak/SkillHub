@@ -57,7 +57,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldGetAllCourses()
         {
+            // Arrange
+            // Test data is set up in InitializeAsync
+
+            // Act
             var response = await Client.GetAsync(BaseRoute);
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var courses = await response.ToResponseModel<List<CourseDto>>();
@@ -68,7 +74,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldGetCourseById()
         {
+            // Arrange
+            // Test data is set up in InitializeAsync
+
+            // Act
             var response = await Client.GetAsync($"{BaseRoute}/{_firstTestCourse.Id.Value}");
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var courseDto = await response.ToResponseModel<CourseDto>();
@@ -81,8 +93,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldReturnNotFoundWhenCourseDoesNotExist()
         {
+            // Arrange
             var nonExistentId = Guid.NewGuid();
+
+            // Act
             var response = await Client.GetAsync($"{BaseRoute}/{nonExistentId}");
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -93,6 +110,7 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldCreateCourse()
         {
+            // Arrange
             var newAuthor = UserData.ThirdUser(_testRole.Id);
             await Context.Users.AddAsync(newAuthor);
             await SaveChangesAsync();
@@ -103,8 +121,10 @@ namespace Tests.Api
                 AuthorId: newAuthor.Id
             );
 
+            // Act
             var response = await Client.PostAsJsonAsync(BaseRoute, request);
 
+            // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
             response.StatusCode.Should().Be(HttpStatusCode.Created);
 
@@ -132,6 +152,7 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldUpdateCourse()
         {
+            // Arrange
             var updatedAuthor = UserData.ThirdUser(_testRole.Id);
             await Context.Users.AddAsync(updatedAuthor);
             await SaveChangesAsync();
@@ -144,7 +165,10 @@ namespace Tests.Api
                 AuthorId = updatedAuthor.Id
             };
 
+            // Act
             var response = await Client.PutAsJsonAsync($"{BaseRoute}/{_firstTestCourse.Id.Value}", request);
+
+            // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
@@ -160,6 +184,7 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldReturnNotFoundWhenUpdatingNonExistentCourse()
         {
+            // Arrange
             var nonExistentId = Guid.NewGuid();
             var newAuthor = UserData.ThirdUser(_testRole.Id);
             await Context.Users.AddAsync(newAuthor);
@@ -173,7 +198,10 @@ namespace Tests.Api
                 AuthorId = UserId.New()
             };
 
+            // Act
             var response = await Client.PutAsJsonAsync($"{BaseRoute}/{nonExistentId}", request);
+            
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -184,7 +212,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldDeleteCourse()
         {
+            // Arrange
+            // Test data is set up in InitializeAsync
+
+            // Act
             var response = await Client.DeleteAsync($"{BaseRoute}/{_secondTestCourse.Id.Value}");
+
+            // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
@@ -196,8 +230,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldReturnNotFoundWhenDeletingNonExistentCourse()
         {
+            // Arrange
             var nonExistentId = Guid.NewGuid();
+
+            // Act
             var response = await Client.DeleteAsync($"{BaseRoute}/{nonExistentId}");
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 

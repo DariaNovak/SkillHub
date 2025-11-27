@@ -5,6 +5,7 @@ using Domain.Roles.Role;
 using Domain.Skills;
 using Domain.Users;
 using Domain.UsersSkills;
+using Domain.Profiles;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -19,6 +20,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Course> Courses { get; init; }
     public DbSet<CourseSkill> CourseSkills { get; init; }
     public DbSet<Lesson> Lessons { get; init; }
+    public DbSet<Profile> Profiles { get; init; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

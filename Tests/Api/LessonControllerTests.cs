@@ -62,7 +62,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldGetAllLessons()
         {
+            // Arrange
+            // Test data is set up in InitializeAsync
+
+            // Act
             var response = await Client.GetAsync(BaseRoute);
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var lessons = await response.ToResponseModel<List<LessonDto>>();
@@ -73,7 +79,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldGetLessonById()
         {
+            // Arrange
+            // Test data is set up in InitializeAsync
+
+            // Act
             var response = await Client.GetAsync($"{BaseRoute}/{_firstTestLesson.Id.Value}");
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var lessonDto = await response.ToResponseModel<LessonDto>();
@@ -87,8 +99,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldReturnNotFoundWhenLessonDoesNotExist()
         {
+            // Arrange
             var nonExistentId = Guid.NewGuid();
+
+            // Act
             var response = await Client.GetAsync($"{BaseRoute}/{nonExistentId}");
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -99,6 +116,7 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldCreateLesson()
         {
+            // Arrange
             var request = new CreateLessonDto(
                 Title: "New Test Lesson",
                 Content: "Lesson Content",
@@ -106,8 +124,10 @@ namespace Tests.Api
                 Order: 3
             );
 
+            // Act
             var response = await Client.PostAsJsonAsync(BaseRoute, request);
 
+            // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
             response.StatusCode.Should().Be(HttpStatusCode.Created);
 
@@ -137,6 +157,7 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldUpdateLesson()
         {
+            // Arrange
             var request = new UpdateLessonDto(
                 Id: _firstTestLesson.Id.Value,
                 Title: "Updated Title",
@@ -144,7 +165,10 @@ namespace Tests.Api
                 Order: 10
             );
 
+            // Act
             var response = await Client.PutAsJsonAsync($"{BaseRoute}/{_firstTestLesson.Id.Value}", request);
+
+            // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
@@ -161,6 +185,7 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldReturnNotFoundWhenUpdatingNonExistentLesson()
         {
+            // Arrange
             var nonExistentId = Guid.NewGuid();
 
             var request = new UpdateLessonDto(
@@ -170,7 +195,10 @@ namespace Tests.Api
                 Order: 1
             );
 
+            // Act
             var response = await Client.PutAsJsonAsync($"{BaseRoute}/{nonExistentId}", request);
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -181,7 +209,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldDeleteLesson()
         {
+            // Arrange
+            // Test data is set up in InitializeAsync
+
+            // Act
             var response = await Client.DeleteAsync($"{BaseRoute}/{_secondTestLesson.Id.Value}");
+
+            // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
@@ -193,8 +227,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldReturnNotFoundWhenDeletingNonExistentLesson()
         {
+            // Arrange
             var nonExistentId = Guid.NewGuid();
+
+            // Act
             var response = await Client.DeleteAsync($"{BaseRoute}/{nonExistentId}");
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 

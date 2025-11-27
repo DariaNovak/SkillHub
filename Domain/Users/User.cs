@@ -1,6 +1,7 @@
 ﻿using Domain.Roles;
 using Domain.Roles.Role;
 using Domain.UsersSkills;
+using Domain.Profiles;
 
 namespace Domain.Users
 {
@@ -15,6 +16,7 @@ namespace Domain.Users
         public DateTime JoinDate { get; private set; }
 
         public ICollection<UserSkill> UserSkills { get; set; }
+        public Profile? Profile { get; set; }
 
 
         private User(

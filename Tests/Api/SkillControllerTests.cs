@@ -38,7 +38,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldGetAllSkills()
         {
+            // Arrange
+            // Test data is set up in InitializeAsync
+
+            // Act
             var response = await Client.GetAsync(BaseRoute);
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var skills = await response.ToResponseModel<List<SkillDto>>();
@@ -49,7 +55,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldGetSkillById()
         {
+            // Arrange
+            // Test data is set up in InitializeAsync
+
+            // Act
             var response = await Client.GetAsync($"{BaseRoute}/{_firstTestSkill.Id.Value}");
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var skillDto = await response.ToResponseModel<SkillDto>();
@@ -61,8 +73,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldReturnNotFoundWhenSkillDoesNotExist()
         {
+            // Arrange
             var nonExistentId = Guid.NewGuid();
+
+            // Act
             var response = await Client.GetAsync($"{BaseRoute}/{nonExistentId}");
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -73,12 +90,15 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldCreateSkill()
         {
+            // Arrange
             var request = new CreateSkillDto(
                 Name: "New Test Skill"
             );
 
+            // Act
             var response = await Client.PostAsJsonAsync(BaseRoute, request);
 
+            // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
             response.StatusCode.Should().Be(HttpStatusCode.Created);
 
@@ -102,12 +122,16 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldUpdateSkill()
         {
+            // Arrange
             var request = new UpdateSkillDto(
                 Id: _firstTestSkill.Id.Value,
                 Name: "Updated Skill Name"
             );
 
+            // Act
             var response = await Client.PutAsJsonAsync($"{BaseRoute}/{_firstTestSkill.Id.Value}", request);
+
+            // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
@@ -122,6 +146,7 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldReturnNotFoundWhenUpdatingNonExistentSkill()
         {
+            // Arrange
             var nonExistentId = Guid.NewGuid();
 
             var request = new UpdateSkillDto(
@@ -129,7 +154,10 @@ namespace Tests.Api
                 Name: "Nonexistent"
             );
 
+            // Act
             var response = await Client.PutAsJsonAsync($"{BaseRoute}/{nonExistentId}", request);
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -140,7 +168,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldDeleteSkill()
         {
+            // Arrange
+            // Test data is set up in InitializeAsync
+
+            // Act
             var response = await Client.DeleteAsync($"{BaseRoute}/{_secondTestSkill.Id.Value}");
+
+            // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
@@ -152,8 +186,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldReturnNotFoundWhenDeletingNonExistentSkill()
         {
+            // Arrange
             var nonExistentId = Guid.NewGuid();
+
+            // Act
             var response = await Client.DeleteAsync($"{BaseRoute}/{nonExistentId}");
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 

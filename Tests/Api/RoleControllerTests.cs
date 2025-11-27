@@ -39,7 +39,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldGetAllRoles()
         {
+            // Arrange
+            // Test data is set up in InitializeAsync
+
+            // Act
             var response = await Client.GetAsync(BaseRoute);
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var roles = await response.ToResponseModel<List<RoleDto>>();
@@ -50,7 +56,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldGetRoleById()
         {
+            // Arrange
+            // Test data is set up in InitializeAsync
+
+            // Act
             var response = await Client.GetAsync($"{BaseRoute}/{_firstTestRole.Id.Value}");
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var roleDto = await response.ToResponseModel<RoleDto>();
@@ -62,8 +74,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldReturnNotFoundWhenRoleDoesNotExist()
         {
+            // Arrange
             var nonExistentId = Guid.NewGuid();
+
+            // Act
             var response = await Client.GetAsync($"{BaseRoute}/{nonExistentId}");
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -74,12 +91,15 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldCreateRole()
         {
+            // Arrange
             var request = new CreateRoleDto(
                 Name: "New Test Role"
             );
 
+            // Act
             var response = await Client.PostAsJsonAsync(BaseRoute, request);
 
+            // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
             response.StatusCode.Should().Be(HttpStatusCode.Created);
 
@@ -103,12 +123,16 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldUpdateRole()
         {
+            // Arrange
             var request = new UpdateRoleDto(
                 Id: _firstTestRole.Id.Value,
                 Name: "Updated Role Name"
             );
 
+            // Act
             var response = await Client.PutAsJsonAsync($"{BaseRoute}/{_firstTestRole.Id.Value}", request);
+
+            // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
@@ -123,6 +147,7 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldReturnNotFoundWhenUpdatingNonExistentRole()
         {
+            // Arrange
             var nonExistentId = Guid.NewGuid();
 
             var request = new UpdateRoleDto(
@@ -130,7 +155,10 @@ namespace Tests.Api
                 Name: "Nonexistent"
             );
 
+            // Act
             var response = await Client.PutAsJsonAsync($"{BaseRoute}/{nonExistentId}", request);
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -141,7 +169,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldDeleteRole()
         {
+            // Arrange
+            // Test data is set up in InitializeAsync
+
+            // Act
             var response = await Client.DeleteAsync($"{BaseRoute}/{_secondTestRole.Id.Value}");
+
+            // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
@@ -153,8 +187,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldReturnNotFoundWhenDeletingNonExistentRole()
         {
+            // Arrange
             var nonExistentId = Guid.NewGuid();
+
+            // Act
             var response = await Client.DeleteAsync($"{BaseRoute}/{nonExistentId}");
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 

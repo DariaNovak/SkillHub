@@ -54,5 +54,20 @@ public static class ConfigurePersistenceServices
         services.AddScoped<SkillRepository>();
         services.AddScoped<ISkillRepository>(provider => provider.GetRequiredService<SkillRepository>());
         services.AddScoped<ISkillQueries>(provider => provider.GetRequiredService<SkillRepository>());
+
+        // UserSkill
+        services.AddScoped<UserSkillRepository>();
+        services.AddScoped<IUserSkillRepository>(provider => provider.GetRequiredService<UserSkillRepository>());
+        services.AddScoped<IUserSkillQueries>(provider => provider.GetRequiredService<UserSkillRepository>());
+
+        // CourseSkill
+        services.AddScoped<CourseSkillRepository>();
+        services.AddScoped<ICourseSkillRepository>(provider => provider.GetRequiredService<CourseSkillRepository>());
+        services.AddScoped<ICourseSkillQueries>(provider => provider.GetRequiredService<CourseSkillRepository>());
+
+        // Profile
+        services.AddScoped<ProfileRepository>();
+        services.AddScoped<IProfileRepository>(provider => provider.GetRequiredService<ProfileRepository>());
+        services.AddScoped<IProfileQueries>(provider => provider.GetRequiredService<ProfileRepository>());
     }
 }

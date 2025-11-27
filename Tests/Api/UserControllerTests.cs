@@ -48,7 +48,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldGetAllUsers()
         {
+            // Arrange
+            // Test data is set up in InitializeAsync
+
+            // Act
             var response = await Client.GetAsync(BaseRoute);
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var users = await response.ToResponseModel<List<UserDto>>();
@@ -59,7 +65,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldGetUserById()
         {
+            // Arrange
+            // Test data is set up in InitializeAsync
+
+            // Act
             var response = await Client.GetAsync($"{BaseRoute}/{_firstTestUser.Id.Value}");
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var userDto = await response.ToResponseModel<UserDto>();
@@ -72,8 +84,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldReturnNotFoundWhenUserDoesNotExist()
         {
+            // Arrange
             var nonExistentId = Guid.NewGuid();
+
+            // Act
             var response = await Client.GetAsync($"{BaseRoute}/{nonExistentId}");
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -84,6 +101,7 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldCreateUser()
         {
+            // Arrange
             var existingRole = await Context.Roles.FirstOrDefaultAsync();
             if (existingRole == null)
             {
@@ -103,8 +121,10 @@ namespace Tests.Api
                 JoinDate: DateTime.UtcNow
             );
 
+            // Act
             var response = await Client.PostAsJsonAsync(BaseRoute, request);
 
+            // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
             response.StatusCode.Should().Be(HttpStatusCode.Created);
 
@@ -124,6 +144,7 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldNotCreateUserWithEmptyEmail()
         {
+            // Arrange
             var request = new CreateUserCommand
             {
                 Name = "Invalid User",
@@ -133,7 +154,10 @@ namespace Tests.Api
                 JoinDate = DateTime.UtcNow
             };
 
+            // Act
             var response = await Client.PostAsJsonAsync(BaseRoute, request);
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -144,6 +168,7 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldUpdateUser()
         {
+            // Arrange
             var existingRole = await Context.Roles.FirstOrDefaultAsync();
             if (existingRole == null)
             {
@@ -164,7 +189,10 @@ namespace Tests.Api
                 JoinDate: DateTime.UtcNow
             );
 
+            // Act
             var response = await Client.PutAsJsonAsync($"{BaseRoute}/{_firstTestUser.Id.Value}", request);
+
+            // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
 
             var updatedUser = await Context.Users
@@ -179,6 +207,7 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldReturnNotFoundWhenUpdatingNonExistentUser()
         {
+            // Arrange
             var nonExistentId = Guid.NewGuid();
             var request = new UpdateUserDto(
                 Id: nonExistentId,
@@ -189,7 +218,10 @@ namespace Tests.Api
                 JoinDate: DateTime.UtcNow
             );
 
+            // Act
             var response = await Client.PutAsJsonAsync($"{BaseRoute}/{nonExistentId}", request);
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
         #endregion
@@ -199,7 +231,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldDeleteUser()
         {
+            // Arrange
+            // Test data is set up in InitializeAsync
+
+            // Act
             var response = await Client.DeleteAsync($"{BaseRoute}/{_secondTestUser.Id.Value}");
+
+            // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
@@ -211,8 +249,13 @@ namespace Tests.Api
         [Fact]
         public async Task ShouldReturnNotFoundWhenDeletingNonExistentUser()
         {
+            // Arrange
             var nonExistentId = Guid.NewGuid();
+
+            // Act
             var response = await Client.DeleteAsync($"{BaseRoute}/{nonExistentId}");
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
