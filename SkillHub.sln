@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastru
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{BE3E55A7-9681-414D-99E4-267C7484418C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +44,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{313A0C17-851A-4A2E-9CFD-341E04350BFB} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{644EE442-CD56-4CD5-B8D8-1C9A40C49A0A} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{E8254F21-5330-4A59-B3DA-5F726B8C3B39} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{233EDF2B-8E6F-44A3-A13C-DEFB3FA7F966} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {31894FAF-6DAF-4575-8A1D-1F2D3803E514}
